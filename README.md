@@ -4,6 +4,22 @@
 
 **[Live Demo](https://yoon-k.github.io/openwebui-code-reviewer/)** | [한국어](#한국어) | [日本語](#日本語)
 
+---
+
+## 📚 About This Project
+
+> **🎓 Reference & Study Project**
+>
+> This project is created for **learning and reference purposes**. It's a "**Fullstack with AI**" collaboration project - not built by a traditional fullstack developer, but through partnership with AI assistance.
+>
+> Feel free to use this as a reference for:
+> - Learning LLM integration patterns
+> - Understanding multi-provider architecture
+> - Studying modern Python web development
+> - Building your own AI-powered tools
+
+---
+
 ## Overview
 
 AI Code Reviewer is a production-ready code analysis tool that leverages Large Language Models (LLMs) to provide intelligent, comprehensive code reviews. It supports multiple LLM providers and can be deployed locally with Ollama or connected to cloud-based services like OpenAI and Anthropic.
@@ -253,15 +269,145 @@ docker-compose up -d
 
 ---
 
+---
+
+## 🔬 Technical Study Guide
+
+### Key Technologies Explained
+
+#### 1. Flask Web Framework
+Flask is a lightweight WSGI web application framework in Python. It's designed to make getting started quick and easy, with the ability to scale up to complex applications.
+
+```python
+from flask import Flask, jsonify, request
+app = Flask(__name__)
+
+@app.route('/api/endpoint', methods=['POST'])
+def handle_request():
+    data = request.get_json()
+    return jsonify({"result": "success"})
+```
+
+**Why Flask?**
+- Minimalist and flexible
+- Great for APIs and microservices
+- Extensive ecosystem of extensions
+- Easy to learn and deploy
+
+#### 2. Pydantic Data Validation
+Pydantic is a data validation library that uses Python type annotations to validate and parse data.
+
+```python
+from pydantic import BaseModel, Field
+from typing import List, Optional
+
+class CodeReviewRequest(BaseModel):
+    code: str = Field(..., description="Code to review")
+    language: str = Field(default="auto")
+    focus_areas: Optional[List[str]] = None
+```
+
+**Benefits:**
+- Automatic type coercion
+- Built-in validation
+- JSON Schema generation
+- Great IDE support with type hints
+
+#### 3. Abstract Base Classes (ABC Pattern)
+The ABC pattern allows defining interfaces that child classes must implement.
+
+```python
+from abc import ABC, abstractmethod
+
+class LLMProvider(ABC):
+    @abstractmethod
+    async def generate(self, prompt: str) -> str:
+        """All providers must implement this method"""
+        pass
+```
+
+**This enables:**
+- Swappable LLM providers
+- Consistent interfaces
+- Easy testing with mocks
+- Clean separation of concerns
+
+#### 4. Async/Await with aiohttp
+Asynchronous programming allows handling multiple requests without blocking.
+
+```python
+import aiohttp
+
+async def call_llm_api(url: str, payload: dict) -> dict:
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, json=payload) as response:
+            return await response.json()
+```
+
+**Advantages:**
+- Non-blocking I/O operations
+- Better resource utilization
+- Handles concurrent requests efficiently
+- Essential for LLM API calls (which can be slow)
+
+#### 5. Docker Containerization
+Docker packages applications with their dependencies for consistent deployment.
+
+```dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app.api:app"]
+```
+
+**Key Concepts:**
+- **Image**: Blueprint for containers
+- **Container**: Running instance of an image
+- **Volume**: Persistent data storage
+- **Network**: Container communication
+
+#### 6. LLM API Integration Patterns
+
+**OpenAI Pattern:**
+```python
+headers = {"Authorization": f"Bearer {api_key}"}
+payload = {
+    "model": "gpt-4",
+    "messages": [{"role": "user", "content": prompt}],
+    "temperature": 0.7
+}
+response = await session.post(url, headers=headers, json=payload)
+```
+
+**Ollama Pattern (Local):**
+```python
+payload = {
+    "model": "codellama",
+    "prompt": prompt,
+    "stream": False
+}
+response = await session.post("http://localhost:11434/api/generate", json=payload)
+```
+
+### Learning Path Recommendations
+
+1. **Beginner**: Start with Flask basics, then add Pydantic
+2. **Intermediate**: Implement the ABC pattern for providers
+3. **Advanced**: Add async support and Docker deployment
+4. **Expert**: Optimize with caching, rate limiting, and monitoring
+
+---
+
 ## License
 
 MIT License - See [LICENSE](LICENSE) for details.
 
-## Contributing
+## Author
 
-Contributions are welcome! Please read our contributing guidelines before submitting PRs.
+**yoon-k** - [GitHub Profile](https://github.com/yoon-k)
 
-## Support
+---
 
-- 📧 Issues: [GitHub Issues](https://github.com/yoon-k/openwebui-code-reviewer/issues)
-- 📖 Docs: [GitHub Pages](https://yoon-k.github.io/openwebui-code-reviewer/)
+⭐ If this project helps you learn, please give it a star!
