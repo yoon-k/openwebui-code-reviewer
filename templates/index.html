@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered code review tool supporting OpenAI, Ollama, and Anthropic. Get instant code analysis, security checks, and improvement suggestions.">
+    <meta name="keywords" content="code review, AI, OpenAI, Ollama, Claude, code analysis, security, performance, best practices">
+    <meta name="author" content="yoon-k">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="AI Code Reviewer - Intelligent Code Analysis">
+    <meta property="og:description" content="Get instant AI-powered code reviews with security analysis, performance tips, and best practice suggestions.">
+    <meta property="og:type" content="website">
+
+    <title>AI Code Reviewer | OpenWebUI + LLM</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">🔍</span>
+                <h1 id="title">AI Code Reviewer</h1>
+            </div>
+            <div class="header-actions">
+                <div class="lang-selector">
+                    <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+                    <button class="lang-btn" data-lang="ko" onclick="setLanguage('ko')">KO</button>
+                    <button class="lang-btn" data-lang="ja" onclick="setLanguage('ja')">JA</button>
+                </div>
+                <div class="provider-badge">
+                    <span>●</span>
+                    <span>LLM Ready</span>
+                </div>
+            </div>
+        </div>
+        <p id="subtitle" style="text-align: center; color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">
+            Intelligent code analysis powered by AI
+        </p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Code Input Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title" id="codePanelTitle">CODE INPUT</span>
+                <div class="panel-actions">
+                    <select id="languageSelect" class="language-select">
+                        <option value="auto">Auto Detect</option>
+                    </select>
+                    <button class="btn-icon" onclick="clearCode()" title="Clear">🗑️</button>
+                </div>
+            </div>
+            <div class="panel-body" style="padding: 0;">
+                <textarea
+                    id="codeEditor"
+                    class="code-editor"
+                    placeholder="// Paste your code here..."
+                    spellcheck="false"
+                ></textarea>
+            </div>
+            <div style="padding: 1rem; border-top: 1px solid var(--border);">
+                <div id="focusAreas" class="focus-areas"></div>
+                <button id="reviewBtn" class="btn btn-primary" style="width: 100%;" onclick="reviewCode()">
+                    <span>🔍</span>
+                    <span id="reviewBtnText">Review Code</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title" id="reviewPanelTitle">REVIEW RESULTS</span>
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('review')">Review</button>
+                    <button class="tab" onclick="showTab('chat')">Chat</button>
+                </div>
+            </div>
+            <div class="panel-body">
+                <!-- Review Results -->
+                <div id="reviewResults">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <h3>No Review Yet</h3>
+                        <p>Paste your code and click 'Review Code' to get started</p>
+                    </div>
+                </div>
+
+                <!-- Chat Panel (hidden by default) -->
+                <div id="chatPanel" style="display: none; height: 100%; flex-direction: column;">
+                    <div id="chatMessages" class="chat-messages"></div>
+                    <div class="chat-input-container">
+                        <input
+                            type="text"
+                            id="chatInput"
+                            class="chat-input"
+                            placeholder="Ask about this code..."
+                        >
+                        <button id="sendBtn" class="btn btn-primary" onclick="sendMessage()">
+                            <span id="sendBtnText">Send</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Hidden panel title for chat -->
+    <span id="chatPanelTitle" style="display: none;">ASK ABOUT CODE</span>
+
+    <script src="/static/js/app.js"></script>
+    <script>
+        // Tab switching
+        function showTab(tab) {
+            const reviewResults = document.getElementById('reviewResults');
+            const chatPanel = document.getElementById('chatPanel');
+            const tabs = document.querySelectorAll('.tab');
+
+            if (tab === 'review') {
+                reviewResults.style.display = 'block';
+                chatPanel.style.display = 'none';
+                tabs[0].classList.add('active');
+                tabs[1].classList.remove('active');
+            } else {
+                reviewResults.style.display = 'none';
+                chatPanel.style.display = 'flex';
+                tabs[0].classList.remove('active');
+                tabs[1].classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
