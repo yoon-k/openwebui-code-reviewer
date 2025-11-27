@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AI Code Reviewer - Get instant AI-powered code reviews with security analysis, performance tips, and best practice suggestions. Supports 7 languages.">
+    <meta name="description" content="AI Code Reviewer - Get instant AI-powered code reviews with security analysis, performance tips, and best practice suggestions.">
     <meta name="keywords" content="code review, AI, code analysis, security, performance, best practices, OpenAI, Ollama, Claude">
     <meta name="author" content="yoon-k">
     <meta property="og:title" content="AI Code Reviewer | OpenWebUI + LLM">
     <meta property="og:description" content="AI-powered code review tool with security analysis and improvement suggestions">
     <meta property="og:type" content="website">
-    <title>AI Code Reviewer | Demo</title>
+    <title>AI Code Reviewer | Interactive Demo</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🔍%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,7 +36,6 @@
             --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 16px;
-            --radius-xl: 24px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -46,46 +45,17 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        .bg-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .bg-animation::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 70%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
-            animation: bgMove 20s ease-in-out infinite;
-        }
-
-        @keyframes bgMove {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(2%, 2%) rotate(2deg); }
+            min-height: 100vh;
         }
 
         .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            background: rgba(10, 10, 15, 0.9);
+            background: rgba(10, 10, 15, 0.95);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-color);
             padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .header-content {
@@ -94,31 +64,111 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
 
-        .logo-icon {
-            font-size: 2.5rem;
-            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
-        }
+        .logo-icon { font-size: 2rem; }
 
         .logo h1 {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
             background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .logo-subtitle {
-            font-size: 0.8rem;
-            color: var(--text-muted);
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
         }
+
+        .api-connection {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .api-input {
+            padding: 8px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            width: 200px;
+        }
+
+        .api-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: var(--shadow-glow);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-muted);
+        }
+
+        .status-dot.connected { background: var(--success); }
+        .status-dot.simulation { background: var(--warning); }
 
         .lang-selector {
             display: flex;
@@ -148,122 +198,227 @@
             color: white;
         }
 
-        .hero {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 120px 24px 80px;
-            text-align: center;
-            z-index: 1;
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 24px;
+            min-height: calc(100vh - 80px);
         }
 
-        .hero-content { max-width: 900px; }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: var(--bg-tertiary);
+        .panel {
+            background: var(--bg-secondary);
             border: 1px solid var(--border-color);
-            border-radius: 50px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 32px;
-        }
-
-        .hero-badge-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--success);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 24px;
-        }
-
-        .hero h1 span {
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-description {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto 48px;
-        }
-
-        .hero-buttons {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
             display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
+            flex-direction: column;
         }
 
-        .btn {
-            padding: 14px 32px;
-            border-radius: var(--radius-md);
+        .panel-header {
+            padding: 16px 20px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
             font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
         }
 
-        .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-            border: none;
-            box-shadow: var(--shadow-glow);
+        .panel-body {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 60px rgba(99, 102, 241, 0.4);
+        .tabs {
+            display: flex;
+            gap: 4px;
         }
 
-        .btn-secondary {
+        .tab {
+            padding: 8px 16px;
             background: transparent;
-            color: var(--text-primary);
             border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
         }
 
-        .btn-secondary:hover {
+        .tab:hover {
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .tab.active {
+            background: var(--gradient-primary);
+            border-color: transparent;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px;
             background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .form-select:focus {
+            outline: none;
             border-color: var(--accent-primary);
         }
 
-        .stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 48px;
-            margin-top: 80px;
-            padding: 32px;
+        .form-select option {
             background: var(--bg-secondary);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
         }
 
-        .stat-item { text-align: center; }
+        .code-editor {
+            width: 100%;
+            min-height: 200px;
+            padding: 16px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            resize: vertical;
+            line-height: 1.5;
+        }
 
-        .stat-value {
+        .code-editor:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .focus-areas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .focus-area {
+            padding: 8px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .focus-area:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .focus-area.active {
+            background: var(--gradient-glow);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+        }
+
+        .result-container {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            min-height: 400px;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .result-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .score-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+        }
+
+        .score-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: var(--bg-primary);
+            border-radius: 50%;
+        }
+
+        .score-value {
+            position: relative;
             font-size: 2rem;
             font-weight: 700;
             background: var(--gradient-primary);
@@ -271,1114 +426,1232 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .stat-label {
+        .score-details {
+            flex: 1;
+        }
+
+        .score-label {
             font-size: 0.85rem;
             color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        .features {
-            position: relative;
-            padding: 120px 24px;
-            z-index: 1;
-        }
-
-        .section-header {
-            text-align: center;
-            max-width: 700px;
-            margin: 0 auto 64px;
-        }
-
-        .section-tag {
-            display: inline-block;
-            padding: 6px 16px;
-            background: var(--gradient-glow);
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--accent-primary);
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .section-header h2 {
-            font-size: clamp(2rem, 4vw, 3rem);
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-
-        .section-header p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-
-        .features-grid {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 24px;
-        }
-
-        .feature-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: 32px;
-            transition: all 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent-primary);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .feature-icon {
-            width: 56px;
-            height: 56px;
-            background: var(--gradient-glow);
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-        }
-
-        .feature-card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .feature-card p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .presets {
-            position: relative;
-            padding: 120px 24px;
-            background: var(--bg-secondary);
-            z-index: 1;
-        }
-
-        .presets-grid {
-            max-width: 1000px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
-        }
-
-        .preset-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 24px;
-            text-align: center;
-            transition: all 0.3s;
-        }
-
-        .preset-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent-primary);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .preset-icon {
-            font-size: 2.5rem;
-            margin-bottom: 12px;
-        }
-
-        .preset-name {
-            font-size: 0.95rem;
-            font-weight: 600;
             margin-bottom: 4px;
         }
 
-        .preset-desc {
-            font-size: 0.8rem;
-            color: var(--text-muted);
+        .score-summary {
+            font-size: 1rem;
+            font-weight: 500;
         }
 
-        .demo {
-            position: relative;
-            padding: 120px 24px;
-            z-index: 1;
-        }
-
-        .demo-window {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
-            overflow: hidden;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        .demo-header {
+        .score-breakdown {
             display: flex;
-            align-items: center;
-            padding: 16px 24px;
-            background: var(--bg-tertiary);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .demo-dots {
-            display: flex;
-            gap: 8px;
-        }
-
-        .demo-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .demo-dot.red { background: #ff5f57; }
-        .demo-dot.yellow { background: #ffbd2e; }
-        .demo-dot.green { background: #28ca41; }
-
-        .demo-title {
-            flex: 1;
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .demo-content {
-            display: grid;
-            grid-template-columns: 400px 1fr;
-            min-height: 500px;
-        }
-
-        .demo-sidebar {
-            background: var(--bg-card);
-            border-right: 1px solid var(--border-color);
-            padding: 24px;
-        }
-
-        .demo-code {
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            height: 200px;
-            overflow: auto;
-            margin-bottom: 16px;
-        }
-
-        .demo-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--gradient-primary);
-            border: none;
-            border-radius: var(--radius-sm);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .demo-main {
-            padding: 24px;
-        }
-
-        .demo-result {
-            background: var(--bg-card);
-            border-radius: var(--radius-md);
-            padding: 24px;
-            height: 100%;
-        }
-
-        .demo-result-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .demo-score {
-            display: flex;
-            align-items: center;
             gap: 16px;
-            padding: 16px;
-            background: var(--bg-primary);
-            border-radius: var(--radius-md);
-            margin-bottom: 20px;
+            margin-top: 12px;
         }
 
-        .demo-score-circle {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: conic-gradient(var(--accent-primary) 252deg, var(--bg-tertiary) 0);
+        .score-item {
+            font-size: 0.8rem;
             display: flex;
             align-items: center;
-            justify-content: center;
-            position: relative;
+            gap: 4px;
         }
 
-        .demo-score-circle::before {
-            content: '';
-            position: absolute;
-            width: 64px;
-            height: 64px;
-            background: var(--bg-primary);
-            border-radius: 50%;
+        .score-item.critical { color: var(--error); }
+        .score-item.high { color: var(--warning); }
+        .score-item.medium { color: var(--info); }
+        .score-item.low { color: var(--success); }
+
+        .issues-section {
+            margin-bottom: 24px;
         }
 
-        .demo-score-value {
-            position: relative;
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .issues-section h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-primary);
         }
 
-        .demo-score-text {
-            flex: 1;
-        }
-
-        .demo-score-label {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
-
-        .demo-score-summary {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .demo-issue {
-            padding: 12px 16px;
+        .issue-item {
+            padding: 16px;
             background: var(--bg-primary);
             border-radius: var(--radius-sm);
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             border-left: 4px solid var(--warning);
         }
 
-        .demo-issue.critical {
-            border-left-color: var(--error);
-        }
+        .issue-item.critical { border-left-color: var(--error); }
+        .issue-item.high { border-left-color: var(--warning); }
+        .issue-item.medium { border-left-color: var(--info); }
+        .issue-item.low { border-left-color: var(--success); }
 
-        .demo-issue.medium {
-            border-left-color: var(--info);
-        }
-
-        .demo-issue.low {
-            border-left-color: var(--success);
-        }
-
-        .demo-issue-header {
+        .issue-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
         }
 
-        .demo-issue-title {
+        .issue-title {
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
 
-        .demo-issue-severity {
-            padding: 2px 8px;
-            border-radius: 12px;
+        .severity-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
             font-size: 0.7rem;
             font-weight: 600;
             text-transform: uppercase;
         }
 
-        .demo-issue-severity.high {
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--warning);
-        }
-
-        .demo-issue-severity.critical {
+        .severity-badge.critical {
             background: rgba(239, 68, 68, 0.15);
             color: var(--error);
         }
 
-        .demo-issue-severity.medium {
+        .severity-badge.high {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        .severity-badge.medium {
             background: rgba(59, 130, 246, 0.15);
             color: var(--info);
         }
 
-        .demo-issue-desc {
+        .severity-badge.low {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+
+        .issue-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .issue-suggestion {
             font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 8px 12px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-sm);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
             color: var(--text-muted);
         }
 
-        .languages {
-            position: relative;
-            padding: 120px 24px;
-            z-index: 1;
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
         }
 
-        .lang-grid {
-            max-width: 900px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 16px;
+        .empty-state h3 {
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
         }
 
-        .lang-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            min-height: 300px;
+        }
+
+        .chat-message {
+            max-width: 80%;
+            padding: 12px 16px;
             border-radius: var(--radius-md);
-            padding: 24px;
-            text-align: center;
-            transition: all 0.3s;
+            font-size: 0.9rem;
         }
 
-        .lang-card:hover {
-            transform: translateY(-2px);
+        .chat-message.user {
+            background: var(--gradient-primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-message.assistant {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 8px;
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .chat-input:focus {
+            outline: none;
             border-color: var(--accent-primary);
         }
 
-        .lang-flag {
-            font-size: 2.5rem;
+        .preset-card {
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
             margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .lang-name {
+        .preset-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .preset-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .preset-card-icon {
+            font-size: 1.5rem;
+        }
+
+        .preset-card-title {
             font-weight: 600;
-            margin-bottom: 4px;
         }
 
-        .lang-code {
+        .preset-card-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 24px;
+            padding: 16px 24px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.success { border-left: 4px solid var(--success); }
+        .notification.error { border-left: 4px solid var(--error); }
+        .notification.info { border-left: 4px solid var(--info); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .history-item {
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .history-item:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .history-item-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .history-item-score {
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .history-item-meta {
             font-size: 0.8rem;
             color: var(--text-muted);
         }
 
-        .cta {
-            position: relative;
-            padding: 120px 24px;
-            background: var(--bg-secondary);
-            text-align: center;
-            z-index: 1;
-        }
-
-        .cta-content { max-width: 700px; margin: 0 auto; }
-
-        .cta h2 {
-            font-size: clamp(2rem, 4vw, 3rem);
-            font-weight: 700;
-            margin-bottom: 24px;
-        }
-
-        .cta p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 40px;
-        }
-
-        .footer {
-            background: var(--bg-primary);
-            border-top: 1px solid var(--border-color);
-            padding: 48px 24px;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 24px;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .footer-logo span:first-child { font-size: 1.5rem; }
-        .footer-logo span:last-child {
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 32px;
-        }
-
-        .footer-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-        }
-
-        .footer-link:hover { color: var(--text-primary); }
-
-        .footer-copy {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
         @media (max-width: 1024px) {
-            .demo-content { grid-template-columns: 1fr; }
-            .demo-sidebar { border-right: none; border-bottom: 1px solid var(--border-color); }
+            .main-container {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
-            .header-content { flex-direction: column; gap: 16px; }
-            .stats-bar { flex-direction: column; gap: 24px; }
-            .features-grid { grid-template-columns: 1fr; }
-            .presets-grid { grid-template-columns: repeat(2, 1fr); }
-            .footer-content { flex-direction: column; text-align: center; }
-        }
+            .header-content {
+                flex-direction: column;
+            }
 
-        @media (max-width: 480px) {
-            .presets-grid { grid-template-columns: 1fr; }
-            .lang-grid { grid-template-columns: repeat(2, 1fr); }
+            .api-connection {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .api-input {
+                width: 100%;
+            }
+
+            .lang-selector {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="bg-animation"></div>
-
     <header class="header">
         <div class="header-content">
             <div class="logo">
                 <span class="logo-icon">🔍</span>
-                <div>
-                    <h1 id="logoTitle">AI Code Reviewer</h1>
-                    <p class="logo-subtitle" id="logoSubtitle">OpenWebUI + LLM Powered</p>
-                </div>
+                <h1 id="logoTitle">AI Code Reviewer</h1>
             </div>
-            <div class="lang-selector">
-                <button class="lang-btn active" onclick="setLanguage('en')">EN</button>
-                <button class="lang-btn" onclick="setLanguage('ko')">KO</button>
-                <button class="lang-btn" onclick="setLanguage('ja')">JA</button>
-                <button class="lang-btn" onclick="setLanguage('zh')">ZH</button>
-                <button class="lang-btn" onclick="setLanguage('es')">ES</button>
-                <button class="lang-btn" onclick="setLanguage('fr')">FR</button>
-                <button class="lang-btn" onclick="setLanguage('de')">DE</button>
+            <div class="header-controls">
+                <div class="api-connection">
+                    <input type="text" id="apiUrl" class="api-input" placeholder="http://localhost:5000">
+                    <button id="connectBtn" class="btn btn-primary" onclick="toggleConnection()">
+                        <span id="connectBtnText">Connect</span>
+                    </button>
+                    <div class="connection-status">
+                        <span class="status-dot" id="statusDot"></span>
+                        <span id="statusText">Simulation</span>
+                    </div>
+                </div>
+                <div class="lang-selector">
+                    <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+                    <button class="lang-btn" data-lang="ko" onclick="setLanguage('ko')">KO</button>
+                    <button class="lang-btn" data-lang="ja" onclick="setLanguage('ja')">JA</button>
+                    <button class="lang-btn" data-lang="zh" onclick="setLanguage('zh')">ZH</button>
+                    <button class="lang-btn" data-lang="es" onclick="setLanguage('es')">ES</button>
+                    <button class="lang-btn" data-lang="fr" onclick="setLanguage('fr')">FR</button>
+                    <button class="lang-btn" data-lang="de" onclick="setLanguage('de')">DE</button>
+                </div>
             </div>
         </div>
     </header>
 
-    <section class="hero">
-        <div class="hero-content">
-            <div class="hero-badge">
-                <span class="hero-badge-dot"></span>
-                <span id="heroBadge">AI-Powered Code Intelligence</span>
+    <main class="main-container">
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title" id="inputPanelTitle">CODE INPUT</span>
             </div>
-            <h1 id="heroTitle">Elevate Your Code Quality with <span>AI Reviews</span></h1>
-            <p class="hero-description" id="heroDesc">
-                Get instant security analysis, performance tips, and best practice suggestions. Support for 7 languages and multiple LLM providers.
-            </p>
-            <div class="hero-buttons">
-                <a href="https://github.com/yoon-gu/openwebui-code-reviewer" class="btn btn-primary" target="_blank">
-                    <span>⭐</span>
-                    <span id="btnGithub">View on GitHub</span>
-                </a>
-                <a href="#demo" class="btn btn-secondary">
-                    <span>👁️</span>
-                    <span id="btnDemo">See Demo</span>
-                </a>
-            </div>
-            <div class="stats-bar">
-                <div class="stat-item">
-                    <div class="stat-value">6</div>
-                    <div class="stat-label" id="statAreas">Review Areas</div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="form-label" id="languageLabel">Programming Language</label>
+                    <select id="languageSelect" class="form-select">
+                        <option value="auto">Auto Detect</option>
+                        <option value="python">Python</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="typescript">TypeScript</option>
+                        <option value="java">Java</option>
+                        <option value="go">Go</option>
+                        <option value="rust">Rust</option>
+                        <option value="cpp">C++</option>
+                        <option value="c">C</option>
+                        <option value="ruby">Ruby</option>
+                        <option value="php">PHP</option>
+                        <option value="swift">Swift</option>
+                        <option value="kotlin">Kotlin</option>
+                        <option value="sql">SQL</option>
+                    </select>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-value">5</div>
-                    <div class="stat-label" id="statPresets">Presets</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">7</div>
-                    <div class="stat-label" id="statLangs">Languages</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">3</div>
-                    <div class="stat-label" id="statProviders">LLM Providers</div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section class="features" id="features">
-        <div class="section-header">
-            <span class="section-tag" id="featuresTag">Features</span>
-            <h2 id="featuresTitle">Comprehensive Code Analysis</h2>
-            <p id="featuresDesc">Everything you need for thorough code reviews</p>
-        </div>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">🔒</div>
-                <h3 id="feat1Title">Security Analysis</h3>
-                <p id="feat1Desc">Detect vulnerabilities, injection risks, and security anti-patterns in your code automatically.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3 id="feat2Title">Performance Review</h3>
-                <p id="feat2Desc">Identify performance bottlenecks, memory leaks, and optimization opportunities.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">✨</div>
-                <h3 id="feat3Title">Code Quality</h3>
-                <p id="feat3Desc">Analyze maintainability, readability, and adherence to best practices.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🐛</div>
-                <h3 id="feat4Title">Bug Detection</h3>
-                <p id="feat4Desc">Find potential bugs, logic errors, and edge cases before they reach production.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">💬</div>
-                <h3 id="feat5Title">AI Chat Assistant</h3>
-                <p id="feat5Desc">Ask questions about your code in natural language and get intelligent explanations.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📜</div>
-                <h3 id="feat6Title">Review History</h3>
-                <p id="feat6Desc">Track all your code reviews with persistent history and easy export options.</p>
-            </div>
-        </div>
-    </section>
+                <div class="form-group">
+                    <label class="form-label" id="codeLabel">Code</label>
+                    <textarea id="codeInput" class="code-editor" placeholder="Paste your code here...">function getUserData(userId) {
+  // SQL injection vulnerability
+  const query = `SELECT * FROM users WHERE id = ${userId}`;
 
-    <section class="presets">
-        <div class="section-header">
-            <span class="section-tag" id="presetsTag">Presets</span>
-            <h2 id="presetsTitle">5 Review Presets</h2>
-            <p id="presetsDesc">Quick configurations for different review scenarios</p>
-        </div>
-        <div class="presets-grid">
-            <div class="preset-card">
-                <div class="preset-icon">🔒</div>
-                <div class="preset-name">Security Audit</div>
-                <div class="preset-desc">Focus on vulnerabilities</div>
-            </div>
-            <div class="preset-card">
-                <div class="preset-icon">⚡</div>
-                <div class="preset-name">Performance Review</div>
-                <div class="preset-desc">Optimize speed</div>
-            </div>
-            <div class="preset-card">
-                <div class="preset-icon">✨</div>
-                <div class="preset-name">Code Quality</div>
-                <div class="preset-desc">Best practices</div>
-            </div>
-            <div class="preset-card">
-                <div class="preset-icon">🔍</div>
-                <div class="preset-name">Full Review</div>
-                <div class="preset-desc">Complete analysis</div>
-            </div>
-            <div class="preset-card">
-                <div class="preset-icon">⚡</div>
-                <div class="preset-name">Quick Check</div>
-                <div class="preset-desc">Fast feedback</div>
-            </div>
-        </div>
-    </section>
+  const password = "admin123";
 
-    <section class="demo" id="demo">
-        <div class="section-header">
-            <span class="section-tag" id="demoTag">Demo</span>
-            <h2 id="demoTitle">See It In Action</h2>
-            <p id="demoDesc">Experience AI-powered code review</p>
-        </div>
-        <div class="demo-window">
-            <div class="demo-header">
-                <div class="demo-dots">
-                    <span class="demo-dot red"></span>
-                    <span class="demo-dot yellow"></span>
-                    <span class="demo-dot green"></span>
+  return db.execute(query);
+}</textarea>
                 </div>
-                <span class="demo-title">AI Code Reviewer</span>
-                <div style="width: 52px;"></div>
+
+                <div class="form-group">
+                    <label class="form-label" id="focusLabel">Focus Areas</label>
+                    <div class="focus-areas" id="focusAreas"></div>
+                </div>
+
+                <button class="btn btn-primary btn-full" onclick="reviewCode()" id="reviewBtn">
+                    <span>🔍</span>
+                    <span id="reviewBtnText">Review Code</span>
+                </button>
+
+                <div style="margin-top: 24px;">
+                    <label class="form-label" id="presetsLabel">Quick Presets</label>
+                    <div id="presetsList"></div>
+                </div>
             </div>
-            <div class="demo-content">
-                <div class="demo-sidebar">
-                    <div class="demo-code">
-<span style="color: #7c3aed;">function</span> <span style="color: #22c55e;">getUserData</span>(userId) {
-  <span style="color: #6b7280;">// SQL injection vulnerability</span>
-  <span style="color: #7c3aed;">const</span> query = <span style="color: #f59e0b;">`SELECT * FROM users 
-    WHERE id = ${userId}`</span>;
-  
-  <span style="color: #7c3aed;">const</span> password = <span style="color: #f59e0b;">"admin123"</span>;
-  
-  <span style="color: #7c3aed;">return</span> db.<span style="color: #22c55e;">execute</span>(query);
-}</div>
-                    <button class="demo-btn">
-                        <span>🔍</span>
-                        <span>Review Code</span>
-                    </button>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title" id="resultPanelTitle">RESULTS</span>
+                <div class="tabs">
+                    <button class="tab active" data-tab="result" onclick="showTab('result')" id="tabResult">Result</button>
+                    <button class="tab" data-tab="chat" onclick="showTab('chat')" id="tabChat">Chat</button>
+                    <button class="tab" data-tab="history" onclick="showTab('history')" id="tabHistory">History</button>
                 </div>
-                <div class="demo-main">
-                    <div class="demo-result">
-                        <div class="demo-result-title">
-                            <span>📊</span>
-                            Review Results
+            </div>
+            <div class="panel-body" style="padding: 0;">
+                <!-- Result Tab -->
+                <div id="resultTab" class="tab-content active" style="padding: 20px;">
+                    <div id="resultContent">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🔍</div>
+                            <h3 id="emptyTitle">No Review Yet</h3>
+                            <p id="emptyDesc">Paste your code and click 'Review Code' to get started</p>
                         </div>
-                        <div class="demo-score">
-                            <div class="demo-score-circle">
-                                <span class="demo-score-value">70</span>
-                            </div>
-                            <div class="demo-score-text">
-                                <div class="demo-score-label">Code Quality Score</div>
-                                <div class="demo-score-summary">2 critical issues, 1 warning found</div>
-                            </div>
-                        </div>
-                        <div class="demo-issue critical">
-                            <div class="demo-issue-header">
-                                <span class="demo-issue-title">SQL Injection Vulnerability</span>
-                                <span class="demo-issue-severity critical">Critical</span>
-                            </div>
-                            <div class="demo-issue-desc">Use parameterized queries instead of string interpolation</div>
-                        </div>
-                        <div class="demo-issue critical">
-                            <div class="demo-issue-header">
-                                <span class="demo-issue-title">Hardcoded Credentials</span>
-                                <span class="demo-issue-severity critical">Critical</span>
-                            </div>
-                            <div class="demo-issue-desc">Remove hardcoded password and use environment variables</div>
-                        </div>
-                        <div class="demo-issue">
-                            <div class="demo-issue-header">
-                                <span class="demo-issue-title">Missing Error Handling</span>
-                                <span class="demo-issue-severity high">High</span>
-                            </div>
-                            <div class="demo-issue-desc">Add try-catch block for database operations</div>
+                    </div>
+                </div>
+
+                <!-- Chat Tab -->
+                <div id="chatTab" class="tab-content chat-container">
+                    <div id="chatMessages" class="chat-messages"></div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chatInput" class="chat-input" placeholder="Ask about this code..." onkeypress="handleChatKeypress(event)">
+                        <button class="btn btn-primary" onclick="sendChatMessage()" id="sendBtn">
+                            <span id="sendBtnText">Send</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- History Tab -->
+                <div id="historyTab" class="tab-content" style="padding: 20px;">
+                    <div id="historyList">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📜</div>
+                            <h3 id="historyEmptyTitle">No History</h3>
+                            <p id="historyEmptyDesc">Your review history will appear here</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-
-    <section class="languages" id="languages">
-        <div class="section-header">
-            <span class="section-tag" id="langsTag">Global</span>
-            <h2 id="langsTitle">7 Languages Supported</h2>
-            <p id="langsDesc">Use the tool in your preferred language</p>
-        </div>
-        <div class="lang-grid">
-            <div class="lang-card">
-                <div class="lang-flag">🇺🇸</div>
-                <div class="lang-name">English</div>
-                <div class="lang-code">EN</div>
-            </div>
-            <div class="lang-card">
-                <div class="lang-flag">🇰🇷</div>
-                <div class="lang-name">한국어</div>
-                <div class="lang-code">KO</div>
-            </div>
-            <div class="lang-card">
-                <div class="lang-flag">🇯🇵</div>
-                <div class="lang-name">日本語</div>
-                <div class="lang-code">JA</div>
-            </div>
-            <div class="lang-card">
-                <div class="lang-flag">🇨🇳</div>
-                <div class="lang-name">中文</div>
-                <div class="lang-code">ZH</div>
-            </div>
-            <div class="lang-card">
-                <div class="lang-flag">🇪🇸</div>
-                <div class="lang-name">Español</div>
-                <div class="lang-code">ES</div>
-            </div>
-            <div class="lang-card">
-                <div class="lang-flag">🇫🇷</div>
-                <div class="lang-name">Français</div>
-                <div class="lang-code">FR</div>
-            </div>
-            <div class="lang-card">
-                <div class="lang-flag">🇩🇪</div>
-                <div class="lang-name">Deutsch</div>
-                <div class="lang-code">DE</div>
-            </div>
-        </div>
-    </section>
-
-    <section class="cta">
-        <div class="cta-content">
-            <h2 id="ctaTitle">Ready to Improve Your Code?</h2>
-            <p id="ctaDesc">Deploy your own AI Code Reviewer with OpenWebUI and start getting actionable insights today.</p>
-            <div class="hero-buttons">
-                <a href="https://github.com/yoon-gu/openwebui-code-reviewer" class="btn btn-primary" target="_blank">
-                    <span>🚀</span>
-                    <span id="ctaBtnStart">Get Started</span>
-                </a>
-                <a href="https://github.com/yoon-gu/openwebui-code-reviewer/blob/main/README.md" class="btn btn-secondary" target="_blank">
-                    <span>📖</span>
-                    <span id="ctaBtnDocs">Documentation</span>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-logo">
-                <span>🔍</span>
-                <span>AI Code Reviewer</span>
-            </div>
-            <div class="footer-links">
-                <a href="https://github.com/yoon-gu/openwebui-code-reviewer" class="footer-link" target="_blank">GitHub</a>
-                <a href="https://github.com/yoon-gu/openwebui-code-reviewer/issues" class="footer-link" target="_blank">Issues</a>
-                <a href="https://github.com/yoon-gu" class="footer-link" target="_blank">Author</a>
-            </div>
-            <p class="footer-copy">© 2024 AI Code Reviewer. MIT License.</p>
-        </div>
-    </footer>
+    </main>
 
     <script>
+        // State
+        let isConnected = false;
+        let apiBaseUrl = '';
+        let currentLang = 'en';
+        let currentResult = null;
+        let currentCode = '';
+        let chatHistory = [];
+        let reviewHistory = [];
+        let selectedFocusAreas = ['security', 'performance', 'best_practices'];
+
+        // Focus areas
+        const focusAreas = [
+            { id: 'security', name: 'Security', icon: '🔒' },
+            { id: 'performance', name: 'Performance', icon: '⚡' },
+            { id: 'maintainability', name: 'Maintainability', icon: '✨' },
+            { id: 'bugs', name: 'Bug Detection', icon: '🐛' },
+            { id: 'best_practices', name: 'Best Practices', icon: '📋' },
+            { id: 'documentation', name: 'Documentation', icon: '📝' }
+        ];
+
+        // Presets
+        const presets = [
+            { id: 'security', icon: '🔒', name: 'Security Audit', areas: ['security', 'bugs'] },
+            { id: 'performance', icon: '⚡', name: 'Performance Review', areas: ['performance', 'best_practices'] },
+            { id: 'quality', icon: '✨', name: 'Code Quality', areas: ['maintainability', 'best_practices', 'documentation'] },
+            { id: 'full', icon: '🔍', name: 'Full Review', areas: ['security', 'performance', 'maintainability', 'bugs', 'best_practices', 'documentation'] },
+            { id: 'quick', icon: '⚡', name: 'Quick Check', areas: ['bugs', 'security'] }
+        ];
+
+        // i18n
         const i18n = {
             en: {
                 logoTitle: 'AI Code Reviewer',
-                logoSubtitle: 'OpenWebUI + LLM Powered',
-                heroBadge: 'AI-Powered Code Intelligence',
-                heroTitle: 'Elevate Your Code Quality with <span>AI Reviews</span>',
-                heroDesc: 'Get instant security analysis, performance tips, and best practice suggestions. Support for 7 languages and multiple LLM providers.',
-                btnGithub: 'View on GitHub',
-                btnDemo: 'See Demo',
-                statAreas: 'Review Areas',
-                statPresets: 'Presets',
-                statLangs: 'Languages',
-                statProviders: 'LLM Providers',
-                featuresTag: 'Features',
-                featuresTitle: 'Comprehensive Code Analysis',
-                featuresDesc: 'Everything you need for thorough code reviews',
-                feat1Title: 'Security Analysis',
-                feat1Desc: 'Detect vulnerabilities, injection risks, and security anti-patterns in your code automatically.',
-                feat2Title: 'Performance Review',
-                feat2Desc: 'Identify performance bottlenecks, memory leaks, and optimization opportunities.',
-                feat3Title: 'Code Quality',
-                feat3Desc: 'Analyze maintainability, readability, and adherence to best practices.',
-                feat4Title: 'Bug Detection',
-                feat4Desc: 'Find potential bugs, logic errors, and edge cases before they reach production.',
-                feat5Title: 'AI Chat Assistant',
-                feat5Desc: 'Ask questions about your code in natural language and get intelligent explanations.',
-                feat6Title: 'Review History',
-                feat6Desc: 'Track all your code reviews with persistent history and easy export options.',
-                presetsTag: 'Presets',
-                presetsTitle: '5 Review Presets',
-                presetsDesc: 'Quick configurations for different review scenarios',
-                demoTag: 'Demo',
-                demoTitle: 'See It In Action',
-                demoDesc: 'Experience AI-powered code review',
-                langsTag: 'Global',
-                langsTitle: '7 Languages Supported',
-                langsDesc: 'Use the tool in your preferred language',
-                ctaTitle: 'Ready to Improve Your Code?',
-                ctaDesc: 'Deploy your own AI Code Reviewer with OpenWebUI and start getting actionable insights today.',
-                ctaBtnStart: 'Get Started',
-                ctaBtnDocs: 'Documentation'
+                inputPanelTitle: 'CODE INPUT',
+                resultPanelTitle: 'RESULTS',
+                languageLabel: 'Programming Language',
+                codeLabel: 'Code',
+                focusLabel: 'Focus Areas',
+                presetsLabel: 'Quick Presets',
+                reviewBtnText: 'Review Code',
+                tabResult: 'Result',
+                tabChat: 'Chat',
+                tabHistory: 'History',
+                emptyTitle: 'No Review Yet',
+                emptyDesc: 'Paste your code and click \'Review Code\' to get started',
+                historyEmptyTitle: 'No History',
+                historyEmptyDesc: 'Your review history will appear here',
+                sendBtnText: 'Send',
+                connectBtnText: 'Connect',
+                disconnectBtnText: 'Disconnect',
+                statusConnected: 'Connected',
+                statusSimulation: 'Simulation',
+                copySuccess: 'Copied to clipboard!',
+                exportSuccess: 'Exported successfully!',
+                connectionSuccess: 'Connected to API',
+                connectionFailed: 'Connection failed',
+                scoreLabel: 'Code Quality Score',
+                issuesFound: 'issues found',
+                suggestion: 'Suggestion',
+                critical: 'Critical',
+                high: 'High',
+                medium: 'Medium',
+                low: 'Low'
             },
             ko: {
                 logoTitle: 'AI 코드 리뷰어',
-                logoSubtitle: 'OpenWebUI + LLM 기반',
-                heroBadge: 'AI 기반 코드 인텔리전스',
-                heroTitle: '<span>AI 리뷰</span>로 코드 품질 향상',
-                heroDesc: '즉각적인 보안 분석, 성능 팁, 모범 사례 제안을 받으세요. 7개 언어와 다양한 LLM 제공자 지원.',
-                btnGithub: 'GitHub에서 보기',
-                btnDemo: '데모 보기',
-                statAreas: '리뷰 영역',
-                statPresets: '프리셋',
-                statLangs: '언어',
-                statProviders: 'LLM 제공자',
-                featuresTag: '기능',
-                featuresTitle: '종합적인 코드 분석',
-                featuresDesc: '철저한 코드 리뷰에 필요한 모든 것',
-                feat1Title: '보안 분석',
-                feat1Desc: '취약점, 인젝션 위험, 보안 안티패턴을 자동으로 감지합니다.',
-                feat2Title: '성능 리뷰',
-                feat2Desc: '성능 병목 현상, 메모리 누수, 최적화 기회를 식별합니다.',
-                feat3Title: '코드 품질',
-                feat3Desc: '유지보수성, 가독성, 모범 사례 준수를 분석합니다.',
-                feat4Title: '버그 탐지',
-                feat4Desc: '프로덕션에 도달하기 전에 잠재적 버그, 로직 오류, 엣지 케이스를 찾습니다.',
-                feat5Title: 'AI 채팅 어시스턴트',
-                feat5Desc: '자연어로 코드에 대해 질문하고 지능적인 설명을 받으세요.',
-                feat6Title: '리뷰 히스토리',
-                feat6Desc: '지속적인 히스토리와 쉬운 내보내기 옵션으로 모든 코드 리뷰를 추적하세요.',
-                presetsTag: '프리셋',
-                presetsTitle: '5개 리뷰 프리셋',
-                presetsDesc: '다양한 리뷰 시나리오를 위한 빠른 구성',
-                demoTag: '데모',
-                demoTitle: '실제로 확인하세요',
-                demoDesc: 'AI 기반 코드 리뷰를 경험하세요',
-                langsTag: '글로벌',
-                langsTitle: '7개 언어 지원',
-                langsDesc: '선호하는 언어로 도구를 사용하세요',
-                ctaTitle: '코드를 개선할 준비가 되셨나요?',
-                ctaDesc: 'OpenWebUI로 자신만의 AI 코드 리뷰어를 배포하고 오늘부터 실행 가능한 인사이트를 얻으세요.',
-                ctaBtnStart: '시작하기',
-                ctaBtnDocs: '문서'
+                inputPanelTitle: '코드 입력',
+                resultPanelTitle: '결과',
+                languageLabel: '프로그래밍 언어',
+                codeLabel: '코드',
+                focusLabel: '검토 영역',
+                presetsLabel: '빠른 프리셋',
+                reviewBtnText: '코드 리뷰',
+                tabResult: '결과',
+                tabChat: '채팅',
+                tabHistory: '기록',
+                emptyTitle: '아직 리뷰가 없습니다',
+                emptyDesc: '코드를 붙여넣고 \'코드 리뷰\' 버튼을 클릭하세요',
+                historyEmptyTitle: '기록 없음',
+                historyEmptyDesc: '리뷰 기록이 여기에 표시됩니다',
+                sendBtnText: '전송',
+                connectBtnText: '연결',
+                disconnectBtnText: '연결 해제',
+                statusConnected: '연결됨',
+                statusSimulation: '시뮬레이션',
+                copySuccess: '클립보드에 복사됨!',
+                exportSuccess: '내보내기 완료!',
+                connectionSuccess: 'API에 연결됨',
+                connectionFailed: '연결 실패',
+                scoreLabel: '코드 품질 점수',
+                issuesFound: '개의 이슈 발견',
+                suggestion: '제안',
+                critical: '심각',
+                high: '높음',
+                medium: '보통',
+                low: '낮음'
             },
             ja: {
                 logoTitle: 'AIコードレビューア',
-                logoSubtitle: 'OpenWebUI + LLM搭載',
-                heroBadge: 'AI駆動コードインテリジェンス',
-                heroTitle: '<span>AIレビュー</span>でコード品質を向上',
-                heroDesc: 'セキュリティ分析、パフォーマンスのヒント、ベストプラクティスの提案を即座に取得。7言語と複数のLLMプロバイダーをサポート。',
-                btnGithub: 'GitHubで見る',
-                btnDemo: 'デモを見る',
-                statAreas: 'レビュー領域',
-                statPresets: 'プリセット',
-                statLangs: '言語',
-                statProviders: 'LLMプロバイダー',
-                featuresTag: '機能',
-                featuresTitle: '包括的なコード分析',
-                featuresDesc: '徹底したコードレビューに必要なすべて',
-                feat1Title: 'セキュリティ分析',
-                feat1Desc: '脆弱性、インジェクションリスク、セキュリティアンチパターンを自動的に検出。',
-                feat2Title: 'パフォーマンスレビュー',
-                feat2Desc: 'パフォーマンスのボトルネック、メモリリーク、最適化の機会を特定。',
-                feat3Title: 'コード品質',
-                feat3Desc: '保守性、可読性、ベストプラクティスへの準拠を分析。',
-                feat4Title: 'バグ検出',
-                feat4Desc: '本番環境に到達する前に潜在的なバグ、ロジックエラー、エッジケースを発見。',
-                feat5Title: 'AIチャットアシスタント',
-                feat5Desc: '自然言語でコードについて質問し、インテリジェントな説明を取得。',
-                feat6Title: 'レビュー履歴',
-                feat6Desc: '永続的な履歴と簡単なエクスポートオプションですべてのコードレビューを追跡。',
-                presetsTag: 'プリセット',
-                presetsTitle: '5つのレビュープリセット',
-                presetsDesc: 'さまざまなレビューシナリオの素早い設定',
-                demoTag: 'デモ',
-                demoTitle: '実際に見てみましょう',
-                demoDesc: 'AI駆動のコードレビューを体験',
-                langsTag: 'グローバル',
-                langsTitle: '7言語対応',
-                langsDesc: 'お好みの言語でツールを使用',
-                ctaTitle: 'コードを改善する準備はできましたか？',
-                ctaDesc: 'OpenWebUIで独自のAIコードレビューアをデプロイし、今日から実行可能なインサイトを取得。',
-                ctaBtnStart: '始める',
-                ctaBtnDocs: 'ドキュメント'
+                inputPanelTitle: 'コード入力',
+                resultPanelTitle: '結果',
+                languageLabel: 'プログラミング言語',
+                codeLabel: 'コード',
+                focusLabel: 'フォーカス領域',
+                presetsLabel: 'クイックプリセット',
+                reviewBtnText: 'コードレビュー',
+                tabResult: '結果',
+                tabChat: 'チャット',
+                tabHistory: '履歴',
+                emptyTitle: 'まだレビューがありません',
+                emptyDesc: 'コードを貼り付けて「コードレビュー」をクリック',
+                historyEmptyTitle: '履歴なし',
+                historyEmptyDesc: 'レビュー履歴がここに表示されます',
+                sendBtnText: '送信',
+                connectBtnText: '接続',
+                disconnectBtnText: '切断',
+                statusConnected: '接続済み',
+                statusSimulation: 'シミュレーション',
+                copySuccess: 'クリップボードにコピー!',
+                exportSuccess: 'エクスポート完了!',
+                connectionSuccess: 'APIに接続しました',
+                connectionFailed: '接続に失敗しました',
+                scoreLabel: 'コード品質スコア',
+                issuesFound: '件の問題が見つかりました',
+                suggestion: '提案',
+                critical: 'クリティカル',
+                high: '高',
+                medium: '中',
+                low: '低'
             },
             zh: {
                 logoTitle: 'AI代码审查器',
-                logoSubtitle: 'OpenWebUI + LLM驱动',
-                heroBadge: 'AI驱动代码智能',
-                heroTitle: '用<span>AI审查</span>提升代码质量',
-                heroDesc: '获取即时安全分析、性能建议和最佳实践建议。支持7种语言和多个LLM提供商。',
-                btnGithub: '在GitHub上查看',
-                btnDemo: '查看演示',
-                statAreas: '审查领域',
-                statPresets: '预设',
-                statLangs: '语言',
-                statProviders: 'LLM提供商',
-                featuresTag: '功能',
-                featuresTitle: '全面的代码分析',
-                featuresDesc: '彻底代码审查所需的一切',
-                feat1Title: '安全分析',
-                feat1Desc: '自动检测漏洞、注入风险和安全反模式。',
-                feat2Title: '性能审查',
-                feat2Desc: '识别性能瓶颈、内存泄漏和优化机会。',
-                feat3Title: '代码质量',
-                feat3Desc: '分析可维护性、可读性和最佳实践遵守情况。',
-                feat4Title: '错误检测',
-                feat4Desc: '在到达生产环境之前发现潜在的错误、逻辑错误和边缘情况。',
-                feat5Title: 'AI聊天助手',
-                feat5Desc: '用自然语言询问代码问题，获得智能解释。',
-                feat6Title: '审查历史',
-                feat6Desc: '通过持久历史和简单导出选项跟踪所有代码审查。',
-                presetsTag: '预设',
-                presetsTitle: '5个审查预设',
-                presetsDesc: '不同审查场景的快速配置',
-                demoTag: '演示',
-                demoTitle: '实际体验',
-                demoDesc: '体验AI驱动的代码审查',
-                langsTag: '全球化',
-                langsTitle: '支持7种语言',
-                langsDesc: '使用您喜欢的语言',
-                ctaTitle: '准备好改进您的代码了吗？',
-                ctaDesc: '使用OpenWebUI部署您自己的AI代码审查器，今天就开始获取可执行的洞察。',
-                ctaBtnStart: '开始使用',
-                ctaBtnDocs: '文档'
+                inputPanelTitle: '代码输入',
+                resultPanelTitle: '结果',
+                languageLabel: '编程语言',
+                codeLabel: '代码',
+                focusLabel: '关注领域',
+                presetsLabel: '快速预设',
+                reviewBtnText: '审查代码',
+                tabResult: '结果',
+                tabChat: '聊天',
+                tabHistory: '历史',
+                emptyTitle: '暂无审查',
+                emptyDesc: '粘贴代码并点击"审查代码"开始',
+                historyEmptyTitle: '暂无历史',
+                historyEmptyDesc: '您的审查历史将显示在这里',
+                sendBtnText: '发送',
+                connectBtnText: '连接',
+                disconnectBtnText: '断开',
+                statusConnected: '已连接',
+                statusSimulation: '模拟模式',
+                copySuccess: '已复制到剪贴板！',
+                exportSuccess: '导出成功！',
+                connectionSuccess: '已连接到API',
+                connectionFailed: '连接失败',
+                scoreLabel: '代码质量分数',
+                issuesFound: '个问题',
+                suggestion: '建议',
+                critical: '严重',
+                high: '高',
+                medium: '中',
+                low: '低'
             },
             es: {
                 logoTitle: 'Revisor de Código IA',
-                logoSubtitle: 'Potenciado por OpenWebUI + LLM',
-                heroBadge: 'Inteligencia de Código con IA',
-                heroTitle: 'Eleva la Calidad de tu Código con <span>Revisiones IA</span>',
-                heroDesc: 'Obtén análisis de seguridad instantáneo, consejos de rendimiento y sugerencias de mejores prácticas. Soporte para 7 idiomas y múltiples proveedores LLM.',
-                btnGithub: 'Ver en GitHub',
-                btnDemo: 'Ver Demo',
-                statAreas: 'Áreas de Revisión',
-                statPresets: 'Presets',
-                statLangs: 'Idiomas',
-                statProviders: 'Proveedores LLM',
-                featuresTag: 'Características',
-                featuresTitle: 'Análisis de Código Completo',
-                featuresDesc: 'Todo lo que necesitas para revisiones de código exhaustivas',
-                feat1Title: 'Análisis de Seguridad',
-                feat1Desc: 'Detecta vulnerabilidades, riesgos de inyección y anti-patrones de seguridad automáticamente.',
-                feat2Title: 'Revisión de Rendimiento',
-                feat2Desc: 'Identifica cuellos de botella, fugas de memoria y oportunidades de optimización.',
-                feat3Title: 'Calidad de Código',
-                feat3Desc: 'Analiza mantenibilidad, legibilidad y adherencia a mejores prácticas.',
-                feat4Title: 'Detección de Bugs',
-                feat4Desc: 'Encuentra bugs potenciales, errores de lógica y casos límite antes de producción.',
-                feat5Title: 'Asistente Chat IA',
-                feat5Desc: 'Haz preguntas sobre tu código en lenguaje natural y obtén explicaciones inteligentes.',
-                feat6Title: 'Historial de Revisiones',
-                feat6Desc: 'Rastrea todas tus revisiones de código con historial persistente y opciones de exportación fáciles.',
-                presetsTag: 'Presets',
-                presetsTitle: '5 Presets de Revisión',
-                presetsDesc: 'Configuraciones rápidas para diferentes escenarios de revisión',
-                demoTag: 'Demo',
-                demoTitle: 'Míralo en Acción',
-                demoDesc: 'Experimenta la revisión de código con IA',
-                langsTag: 'Global',
-                langsTitle: '7 Idiomas Soportados',
-                langsDesc: 'Usa la herramienta en tu idioma preferido',
-                ctaTitle: '¿Listo para Mejorar tu Código?',
-                ctaDesc: 'Despliega tu propio Revisor de Código IA con OpenWebUI y comienza a obtener insights accionables hoy.',
-                ctaBtnStart: 'Comenzar',
-                ctaBtnDocs: 'Documentación'
+                inputPanelTitle: 'ENTRADA DE CÓDIGO',
+                resultPanelTitle: 'RESULTADOS',
+                languageLabel: 'Lenguaje de Programación',
+                codeLabel: 'Código',
+                focusLabel: 'Áreas de Enfoque',
+                presetsLabel: 'Presets Rápidos',
+                reviewBtnText: 'Revisar Código',
+                tabResult: 'Resultado',
+                tabChat: 'Chat',
+                tabHistory: 'Historial',
+                emptyTitle: 'Sin Revisión Aún',
+                emptyDesc: 'Pega tu código y haz clic en \'Revisar Código\'',
+                historyEmptyTitle: 'Sin Historial',
+                historyEmptyDesc: 'Tu historial de revisiones aparecerá aquí',
+                sendBtnText: 'Enviar',
+                connectBtnText: 'Conectar',
+                disconnectBtnText: 'Desconectar',
+                statusConnected: 'Conectado',
+                statusSimulation: 'Simulación',
+                copySuccess: '¡Copiado al portapapeles!',
+                exportSuccess: '¡Exportado con éxito!',
+                connectionSuccess: 'Conectado a la API',
+                connectionFailed: 'Conexión fallida',
+                scoreLabel: 'Puntuación de Calidad',
+                issuesFound: 'problemas encontrados',
+                suggestion: 'Sugerencia',
+                critical: 'Crítico',
+                high: 'Alto',
+                medium: 'Medio',
+                low: 'Bajo'
             },
             fr: {
                 logoTitle: 'Réviseur de Code IA',
-                logoSubtitle: 'Propulsé par OpenWebUI + LLM',
-                heroBadge: 'Intelligence de Code par IA',
-                heroTitle: 'Élevez la Qualité de Votre Code avec des <span>Revues IA</span>',
-                heroDesc: 'Obtenez une analyse de sécurité instantanée, des conseils de performance et des suggestions de meilleures pratiques. Support de 7 langues et plusieurs fournisseurs LLM.',
-                btnGithub: 'Voir sur GitHub',
-                btnDemo: 'Voir la Démo',
-                statAreas: 'Domaines de Revue',
-                statPresets: 'Préréglages',
-                statLangs: 'Langues',
-                statProviders: 'Fournisseurs LLM',
-                featuresTag: 'Fonctionnalités',
-                featuresTitle: 'Analyse de Code Complète',
-                featuresDesc: 'Tout ce dont vous avez besoin pour des revues de code approfondies',
-                feat1Title: 'Analyse de Sécurité',
-                feat1Desc: 'Détectez automatiquement les vulnérabilités, les risques d\'injection et les anti-patterns de sécurité.',
-                feat2Title: 'Revue de Performance',
-                feat2Desc: 'Identifiez les goulots d\'étranglement, les fuites de mémoire et les opportunités d\'optimisation.',
-                feat3Title: 'Qualité du Code',
-                feat3Desc: 'Analysez la maintenabilité, la lisibilité et l\'adhésion aux meilleures pratiques.',
-                feat4Title: 'Détection de Bugs',
-                feat4Desc: 'Trouvez les bugs potentiels, les erreurs de logique et les cas limites avant la production.',
-                feat5Title: 'Assistant Chat IA',
-                feat5Desc: 'Posez des questions sur votre code en langage naturel et obtenez des explications intelligentes.',
-                feat6Title: 'Historique des Revues',
-                feat6Desc: 'Suivez toutes vos revues de code avec un historique persistant et des options d\'export faciles.',
-                presetsTag: 'Préréglages',
-                presetsTitle: '5 Préréglages de Revue',
-                presetsDesc: 'Configurations rapides pour différents scénarios de revue',
-                demoTag: 'Démo',
-                demoTitle: 'Voyez-le en Action',
-                demoDesc: 'Découvrez la revue de code par IA',
-                langsTag: 'Global',
-                langsTitle: '7 Langues Supportées',
-                langsDesc: 'Utilisez l\'outil dans votre langue préférée',
-                ctaTitle: 'Prêt à Améliorer Votre Code?',
-                ctaDesc: 'Déployez votre propre Réviseur de Code IA avec OpenWebUI et obtenez des insights actionnables dès aujourd\'hui.',
-                ctaBtnStart: 'Commencer',
-                ctaBtnDocs: 'Documentation'
+                inputPanelTitle: 'ENTRÉE DE CODE',
+                resultPanelTitle: 'RÉSULTATS',
+                languageLabel: 'Langage de Programmation',
+                codeLabel: 'Code',
+                focusLabel: 'Domaines de Focus',
+                presetsLabel: 'Préréglages Rapides',
+                reviewBtnText: 'Réviser le Code',
+                tabResult: 'Résultat',
+                tabChat: 'Chat',
+                tabHistory: 'Historique',
+                emptyTitle: 'Pas de Révision',
+                emptyDesc: 'Collez votre code et cliquez sur \'Réviser le Code\'',
+                historyEmptyTitle: 'Pas d\'Historique',
+                historyEmptyDesc: 'Votre historique de révisions apparaîtra ici',
+                sendBtnText: 'Envoyer',
+                connectBtnText: 'Connecter',
+                disconnectBtnText: 'Déconnecter',
+                statusConnected: 'Connecté',
+                statusSimulation: 'Simulation',
+                copySuccess: 'Copié dans le presse-papiers !',
+                exportSuccess: 'Exporté avec succès !',
+                connectionSuccess: 'Connecté à l\'API',
+                connectionFailed: 'Échec de la connexion',
+                scoreLabel: 'Score de Qualité',
+                issuesFound: 'problèmes trouvés',
+                suggestion: 'Suggestion',
+                critical: 'Critique',
+                high: 'Élevé',
+                medium: 'Moyen',
+                low: 'Faible'
             },
             de: {
                 logoTitle: 'KI-Code-Reviewer',
-                logoSubtitle: 'Powered by OpenWebUI + LLM',
-                heroBadge: 'KI-gestützte Code-Intelligenz',
-                heroTitle: 'Verbessern Sie Ihre Code-Qualität mit <span>KI-Reviews</span>',
-                heroDesc: 'Erhalten Sie sofortige Sicherheitsanalysen, Performance-Tipps und Best-Practice-Vorschläge. Unterstützung für 7 Sprachen und mehrere LLM-Anbieter.',
-                btnGithub: 'Auf GitHub ansehen',
-                btnDemo: 'Demo ansehen',
-                statAreas: 'Review-Bereiche',
-                statPresets: 'Voreinstellungen',
-                statLangs: 'Sprachen',
-                statProviders: 'LLM-Anbieter',
-                featuresTag: 'Funktionen',
-                featuresTitle: 'Umfassende Code-Analyse',
-                featuresDesc: 'Alles was Sie für gründliche Code-Reviews brauchen',
-                feat1Title: 'Sicherheitsanalyse',
-                feat1Desc: 'Erkennen Sie automatisch Schwachstellen, Injection-Risiken und Sicherheits-Antimuster.',
-                feat2Title: 'Performance-Review',
-                feat2Desc: 'Identifizieren Sie Performance-Engpässe, Speicherlecks und Optimierungsmöglichkeiten.',
-                feat3Title: 'Code-Qualität',
-                feat3Desc: 'Analysieren Sie Wartbarkeit, Lesbarkeit und Einhaltung von Best Practices.',
-                feat4Title: 'Bug-Erkennung',
-                feat4Desc: 'Finden Sie potenzielle Bugs, Logikfehler und Grenzfälle vor der Produktion.',
-                feat5Title: 'KI-Chat-Assistent',
-                feat5Desc: 'Stellen Sie Fragen zu Ihrem Code in natürlicher Sprache und erhalten Sie intelligente Erklärungen.',
-                feat6Title: 'Review-Verlauf',
-                feat6Desc: 'Verfolgen Sie alle Ihre Code-Reviews mit persistentem Verlauf und einfachen Export-Optionen.',
-                presetsTag: 'Voreinstellungen',
-                presetsTitle: '5 Review-Voreinstellungen',
-                presetsDesc: 'Schnelle Konfigurationen für verschiedene Review-Szenarien',
-                demoTag: 'Demo',
-                demoTitle: 'Sehen Sie es in Aktion',
-                demoDesc: 'Erleben Sie KI-gesteuerte Code-Reviews',
-                langsTag: 'Global',
-                langsTitle: '7 Sprachen unterstützt',
-                langsDesc: 'Verwenden Sie das Tool in Ihrer bevorzugten Sprache',
-                ctaTitle: 'Bereit, Ihren Code zu verbessern?',
-                ctaDesc: 'Stellen Sie Ihren eigenen KI-Code-Reviewer mit OpenWebUI bereit und erhalten Sie heute umsetzbare Erkenntnisse.',
-                ctaBtnStart: 'Loslegen',
-                ctaBtnDocs: 'Dokumentation'
+                inputPanelTitle: 'CODE-EINGABE',
+                resultPanelTitle: 'ERGEBNISSE',
+                languageLabel: 'Programmiersprache',
+                codeLabel: 'Code',
+                focusLabel: 'Fokus-Bereiche',
+                presetsLabel: 'Schnelle Voreinstellungen',
+                reviewBtnText: 'Code Überprüfen',
+                tabResult: 'Ergebnis',
+                tabChat: 'Chat',
+                tabHistory: 'Verlauf',
+                emptyTitle: 'Noch keine Überprüfung',
+                emptyDesc: 'Fügen Sie Ihren Code ein und klicken Sie auf \'Code Überprüfen\'',
+                historyEmptyTitle: 'Kein Verlauf',
+                historyEmptyDesc: 'Ihr Überprüfungsverlauf erscheint hier',
+                sendBtnText: 'Senden',
+                connectBtnText: 'Verbinden',
+                disconnectBtnText: 'Trennen',
+                statusConnected: 'Verbunden',
+                statusSimulation: 'Simulation',
+                copySuccess: 'In die Zwischenablage kopiert!',
+                exportSuccess: 'Erfolgreich exportiert!',
+                connectionSuccess: 'Mit API verbunden',
+                connectionFailed: 'Verbindung fehlgeschlagen',
+                scoreLabel: 'Code-Qualitätsbewertung',
+                issuesFound: 'Probleme gefunden',
+                suggestion: 'Vorschlag',
+                critical: 'Kritisch',
+                high: 'Hoch',
+                medium: 'Mittel',
+                low: 'Niedrig'
             }
         };
 
-        let currentLang = 'en';
+        // Simulation response
+        const simulationResponse = {
+            score: 45,
+            summary: 'Critical security vulnerabilities detected. The code contains SQL injection vulnerability and hardcoded credentials.',
+            issues: [
+                {
+                    title: 'SQL Injection Vulnerability',
+                    severity: 'critical',
+                    description: 'Direct string interpolation in SQL query allows attackers to execute arbitrary SQL commands.',
+                    suggestion: 'Use parameterized queries or prepared statements instead of string interpolation.',
+                    line: 3
+                },
+                {
+                    title: 'Hardcoded Credentials',
+                    severity: 'critical',
+                    description: 'Password is hardcoded in the source code, which is a major security risk.',
+                    suggestion: 'Use environment variables or a secure configuration management system for credentials.',
+                    line: 5
+                },
+                {
+                    title: 'Missing Error Handling',
+                    severity: 'high',
+                    description: 'No try-catch block for database operations. Errors will propagate unexpectedly.',
+                    suggestion: 'Add proper error handling with try-catch blocks and meaningful error messages.',
+                    line: 7
+                },
+                {
+                    title: 'No Input Validation',
+                    severity: 'medium',
+                    description: 'The userId parameter is not validated before use.',
+                    suggestion: 'Validate and sanitize all user inputs before processing.',
+                    line: 1
+                }
+            ],
+            recommendations: [
+                'Implement parameterized queries for all database operations',
+                'Move sensitive credentials to environment variables',
+                'Add comprehensive error handling',
+                'Implement input validation and sanitization'
+            ]
+        };
 
+        // Functions
         function setLanguage(lang) {
             currentLang = lang;
             const texts = i18n[lang];
-            
+
             Object.keys(texts).forEach(key => {
                 const element = document.getElementById(key);
                 if (element) {
-                    if (key === 'heroTitle') {
-                        element.innerHTML = texts[key];
-                    } else {
-                        element.textContent = texts[key];
-                    }
+                    element.textContent = texts[key];
                 }
             });
 
             document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.remove('active');
+                btn.classList.toggle('active', btn.dataset.lang === lang);
             });
-            event.target.classList.add('active');
 
-            localStorage.setItem('preferredLanguage', lang);
+            localStorage.setItem('code-reviewer-lang', lang);
+            renderFocusAreas();
+            renderPresets();
+
+            if (currentResult) {
+                renderResult(currentResult);
+            }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const saved = localStorage.getItem('preferredLanguage');
-            if (saved && i18n[saved]) {
-                const btn = document.querySelector(`.lang-btn[onclick="setLanguage('${saved}')"]`);
-                if (btn) btn.click();
-            }
-        });
+        function getText(key) {
+            return i18n[currentLang][key] || i18n['en'][key] || key;
+        }
 
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        async function toggleConnection() {
+            const url = document.getElementById('apiUrl').value.trim();
+
+            if (isConnected) {
+                isConnected = false;
+                apiBaseUrl = '';
+                localStorage.removeItem('code-reviewer-api');
+                updateConnectionStatus();
+                return;
+            }
+
+            if (!url) {
+                showNotification('Please enter API URL', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${url}/api/health`);
+                if (response.ok) {
+                    isConnected = true;
+                    apiBaseUrl = url;
+                    localStorage.setItem('code-reviewer-api', url);
+                    showNotification(getText('connectionSuccess'), 'success');
+                } else {
+                    throw new Error('Health check failed');
                 }
+            } catch (error) {
+                isConnected = false;
+                showNotification(getText('connectionFailed'), 'error');
+            }
+
+            updateConnectionStatus();
+        }
+
+        function updateConnectionStatus() {
+            const dot = document.getElementById('statusDot');
+            const text = document.getElementById('statusText');
+            const btn = document.getElementById('connectBtn');
+            const btnText = document.getElementById('connectBtnText');
+
+            if (isConnected) {
+                dot.className = 'status-dot connected';
+                text.textContent = getText('statusConnected');
+                btn.className = 'btn btn-danger';
+                btnText.textContent = getText('disconnectBtnText');
+            } else {
+                dot.className = 'status-dot simulation';
+                text.textContent = getText('statusSimulation');
+                btn.className = 'btn btn-primary';
+                btnText.textContent = getText('connectBtnText');
+            }
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+        }
+
+        function renderFocusAreas() {
+            const container = document.getElementById('focusAreas');
+            container.innerHTML = focusAreas.map(area => `
+                <div class="focus-area ${selectedFocusAreas.includes(area.id) ? 'active' : ''}"
+                     onclick="toggleFocusArea('${area.id}')" data-area="${area.id}">
+                    ${area.icon} ${area.name}
+                </div>
+            `).join('');
+        }
+
+        function toggleFocusArea(areaId) {
+            if (selectedFocusAreas.includes(areaId)) {
+                selectedFocusAreas = selectedFocusAreas.filter(a => a !== areaId);
+            } else {
+                selectedFocusAreas.push(areaId);
+            }
+            renderFocusAreas();
+        }
+
+        function renderPresets() {
+            const container = document.getElementById('presetsList');
+            container.innerHTML = presets.map(preset => `
+                <div class="preset-card" onclick="usePreset('${preset.id}')">
+                    <div class="preset-card-header">
+                        <span class="preset-card-icon">${preset.icon}</span>
+                        <span class="preset-card-title">${preset.name}</span>
+                    </div>
+                    <p class="preset-card-desc">${preset.areas.length} focus areas</p>
+                </div>
+            `).join('');
+        }
+
+        function usePreset(presetId) {
+            const preset = presets.find(p => p.id === presetId);
+            if (preset) {
+                selectedFocusAreas = [...preset.areas];
+                renderFocusAreas();
+                showNotification(`Applied ${preset.name} preset`, 'info');
+            }
+        }
+
+        async function reviewCode() {
+            const code = document.getElementById('codeInput').value.trim();
+            const language = document.getElementById('languageSelect').value;
+
+            if (!code) {
+                showNotification('Please enter code to review', 'error');
+                return;
+            }
+
+            currentCode = code;
+            showLoading();
+
+            try {
+                let result;
+                if (isConnected) {
+                    const response = await fetch(`${apiBaseUrl}/api/review`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            code,
+                            language,
+                            focus_areas: selectedFocusAreas
+                        })
+                    });
+                    result = await response.json();
+                } else {
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    result = simulationResponse;
+                }
+
+                currentResult = result;
+                renderResult(result);
+                addToHistory(code, result);
+                showTab('result');
+            } catch (error) {
+                showNotification('Error reviewing code: ' + error.message, 'error');
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('resultContent').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            `;
+        }
+
+        function renderResult(result) {
+            const container = document.getElementById('resultContent');
+            const criticalCount = result.issues.filter(i => i.severity === 'critical').length;
+            const highCount = result.issues.filter(i => i.severity === 'high').length;
+            const mediumCount = result.issues.filter(i => i.severity === 'medium').length;
+            const lowCount = result.issues.filter(i => i.severity === 'low').length;
+
+            const scoreColor = result.score >= 80 ? 'var(--success)' :
+                              result.score >= 60 ? 'var(--info)' :
+                              result.score >= 40 ? 'var(--warning)' : 'var(--error)';
+
+            container.innerHTML = `
+                <div class="result-container">
+                    <div class="result-header">
+                        <div class="result-title">
+                            <span>📊</span>
+                            Review Results
+                        </div>
+                        <div class="result-actions">
+                            <button class="btn btn-secondary" onclick="copyResult()">📋 Copy</button>
+                            <button class="btn btn-secondary" onclick="exportMarkdown()">📄 Export</button>
+                        </div>
+                    </div>
+
+                    <div class="score-section">
+                        <div class="score-circle" style="background: conic-gradient(${scoreColor} ${result.score * 3.6}deg, var(--bg-tertiary) 0);">
+                            <span class="score-value">${result.score}</span>
+                        </div>
+                        <div class="score-details">
+                            <div class="score-label">${getText('scoreLabel')}</div>
+                            <div class="score-summary">${result.issues.length} ${getText('issuesFound')}</div>
+                            <div class="score-breakdown">
+                                ${criticalCount ? `<span class="score-item critical">● ${criticalCount} ${getText('critical')}</span>` : ''}
+                                ${highCount ? `<span class="score-item high">● ${highCount} ${getText('high')}</span>` : ''}
+                                ${mediumCount ? `<span class="score-item medium">● ${mediumCount} ${getText('medium')}</span>` : ''}
+                                ${lowCount ? `<span class="score-item low">● ${lowCount} ${getText('low')}</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+
+                    ${result.summary ? `
+                    <div class="issues-section">
+                        <h4>📝 Summary</h4>
+                        <p style="color: var(--text-secondary); line-height: 1.7;">${result.summary}</p>
+                    </div>
+                    ` : ''}
+
+                    <div class="issues-section">
+                        <h4>🔍 Issues Found</h4>
+                        ${result.issues.map(issue => `
+                            <div class="issue-item ${issue.severity}">
+                                <div class="issue-header">
+                                    <span class="issue-title">${issue.title}</span>
+                                    <span class="severity-badge ${issue.severity}">${getText(issue.severity)}</span>
+                                </div>
+                                <p class="issue-description">${issue.description}</p>
+                                ${issue.suggestion ? `
+                                <div class="issue-suggestion">
+                                    <strong>${getText('suggestion')}:</strong> ${issue.suggestion}
+                                </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    ${result.recommendations && result.recommendations.length ? `
+                    <div class="issues-section">
+                        <h4>💡 Recommendations</h4>
+                        <ul style="list-style: none;">
+                            ${result.recommendations.map(rec => `
+                                <li style="padding: 8px 0; color: var(--text-secondary); border-bottom: 1px solid var(--border-color);">
+                                    ✓ ${rec}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function copyResult() {
+            if (!currentResult) return;
+
+            let text = `# Code Review Results\n\n`;
+            text += `**Score:** ${currentResult.score}/100\n\n`;
+            if (currentResult.summary) text += `## Summary\n${currentResult.summary}\n\n`;
+            text += `## Issues\n`;
+            currentResult.issues.forEach(issue => {
+                text += `### [${issue.severity.toUpperCase()}] ${issue.title}\n`;
+                text += `${issue.description}\n`;
+                if (issue.suggestion) text += `**Suggestion:** ${issue.suggestion}\n`;
+                text += '\n';
             });
+
+            navigator.clipboard.writeText(text);
+            showNotification(getText('copySuccess'), 'success');
+        }
+
+        function exportMarkdown() {
+            if (!currentResult) return;
+
+            let text = `# Code Review Results\n\n`;
+            text += `**Score:** ${currentResult.score}/100\n\n`;
+            text += `**Date:** ${new Date().toISOString()}\n\n`;
+            if (currentResult.summary) text += `## Summary\n${currentResult.summary}\n\n`;
+            text += `## Issues Found\n`;
+            currentResult.issues.forEach(issue => {
+                text += `### [${issue.severity.toUpperCase()}] ${issue.title}\n`;
+                text += `${issue.description}\n`;
+                if (issue.suggestion) text += `**Suggestion:** ${issue.suggestion}\n`;
+                text += '\n';
+            });
+            if (currentResult.recommendations) {
+                text += `## Recommendations\n`;
+                currentResult.recommendations.forEach(rec => {
+                    text += `- ${rec}\n`;
+                });
+            }
+
+            const blob = new Blob([text], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `code-review-${Date.now()}.md`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showNotification(getText('exportSuccess'), 'success');
+        }
+
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            input.value = '';
+            addChatMessage(message, 'user');
+
+            try {
+                let response;
+                if (isConnected) {
+                    const res = await fetch(`${apiBaseUrl}/api/chat`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            message,
+                            code: currentCode,
+                            history: chatHistory.map(m => ({ role: m.role, content: m.content })),
+                            language: currentLang
+                        })
+                    });
+                    const data = await res.json();
+                    response = data.response;
+                } else {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    const responses = [
+                        "Based on the code review, the main issue is the SQL injection vulnerability. You should use parameterized queries instead of string interpolation.",
+                        "The hardcoded password is a critical security risk. Store sensitive credentials in environment variables or use a secrets management service.",
+                        "I recommend adding error handling with try-catch blocks to properly handle database errors and prevent information leakage.",
+                        "Input validation is important for security. Validate the userId parameter before using it in the query.",
+                        "For better code quality, consider adding TypeScript for type safety and JSDoc comments for documentation."
+                    ];
+                    response = responses[Math.floor(Math.random() * responses.length)];
+                }
+
+                addChatMessage(response, 'assistant');
+            } catch (error) {
+                addChatMessage('Sorry, I encountered an error. Please try again.', 'assistant');
+            }
+        }
+
+        function addChatMessage(content, role) {
+            chatHistory.push({ role, content });
+
+            const container = document.getElementById('chatMessages');
+            const messageEl = document.createElement('div');
+            messageEl.className = `chat-message ${role}`;
+            messageEl.textContent = content;
+            container.appendChild(messageEl);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function addToHistory(code, result) {
+            const item = {
+                code: code.substring(0, 200),
+                score: result.score,
+                issues: result.issues.length,
+                timestamp: new Date().toISOString(),
+                result
+            };
+
+            reviewHistory.unshift(item);
+            if (reviewHistory.length > 20) {
+                reviewHistory.pop();
+            }
+
+            localStorage.setItem('code-reviewer-history', JSON.stringify(reviewHistory));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyList');
+
+            if (reviewHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📜</div>
+                        <h3>${getText('historyEmptyTitle')}</h3>
+                        <p>${getText('historyEmptyDesc')}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = reviewHistory.map((item, index) => `
+                <div class="history-item" onclick="loadHistoryItem(${index})">
+                    <div class="history-item-header">
+                        <span class="history-item-title">Review #${reviewHistory.length - index}</span>
+                        <span class="history-item-score">${item.score}/100</span>
+                    </div>
+                    <p class="history-item-meta">${new Date(item.timestamp).toLocaleString()} • ${item.issues} issues</p>
+                </div>
+            `).join('');
+        }
+
+        function loadHistoryItem(index) {
+            const item = reviewHistory[index];
+            currentResult = item.result;
+            renderResult(item.result);
+            showTab('result');
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load saved settings
+            const savedLang = localStorage.getItem('code-reviewer-lang');
+            if (savedLang && i18n[savedLang]) {
+                setLanguage(savedLang);
+            }
+
+            const savedApi = localStorage.getItem('code-reviewer-api');
+            if (savedApi) {
+                document.getElementById('apiUrl').value = savedApi;
+            }
+
+            const savedHistory = localStorage.getItem('code-reviewer-history');
+            if (savedHistory) {
+                try {
+                    reviewHistory = JSON.parse(savedHistory);
+                } catch (e) {}
+            }
+
+            renderFocusAreas();
+            renderPresets();
+            renderHistory();
+            updateConnectionStatus();
         });
     </script>
 </body>
