@@ -22,6 +22,9 @@
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container"></div>
+
     <!-- Header -->
     <header class="header">
         <div class="header-content">
@@ -34,14 +37,18 @@
                     <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
                     <button class="lang-btn" data-lang="ko" onclick="setLanguage('ko')">KO</button>
                     <button class="lang-btn" data-lang="ja" onclick="setLanguage('ja')">JA</button>
+                    <button class="lang-btn" data-lang="zh" onclick="setLanguage('zh')">ZH</button>
+                    <button class="lang-btn" data-lang="es" onclick="setLanguage('es')">ES</button>
+                    <button class="lang-btn" data-lang="fr" onclick="setLanguage('fr')">FR</button>
+                    <button class="lang-btn" data-lang="de" onclick="setLanguage('de')">DE</button>
                 </div>
                 <div class="provider-badge">
-                    <span>●</span>
+                    <span class="status-dot"></span>
                     <span>LLM Ready</span>
                 </div>
             </div>
         </div>
-        <p id="subtitle" style="text-align: center; color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">
+        <p id="subtitle" class="header-subtitle">
             Intelligent code analysis powered by AI
         </p>
     </header>
@@ -56,10 +63,10 @@
                     <select id="languageSelect" class="language-select">
                         <option value="auto">Auto Detect</option>
                     </select>
-                    <button class="btn-icon" onclick="clearCode()" title="Clear">🗑️</button>
+                    <button class="btn-icon" onclick="clearCode()" title="Clear" id="clearBtn">🗑️</button>
                 </div>
             </div>
-            <div class="panel-body" style="padding: 0;">
+            <div class="panel-body code-panel-body">
                 <textarea
                     id="codeEditor"
                     class="code-editor"
@@ -67,10 +74,10 @@
                     spellcheck="false"
                 ></textarea>
             </div>
-            <div style="padding: 1rem; border-top: 1px solid var(--border);">
+            <div class="panel-footer">
                 <div id="focusAreas" class="focus-areas"></div>
-                <button id="reviewBtn" class="btn btn-primary" style="width: 100%;" onclick="reviewCode()">
-                    <span>🔍</span>
+                <button id="reviewBtn" class="btn btn-primary btn-full" onclick="reviewCode()">
+                    <span class="btn-icon-left">🔍</span>
                     <span id="reviewBtnText">Review Code</span>
                 </button>
             </div>
@@ -81,22 +88,24 @@
             <div class="panel-header">
                 <span class="panel-title" id="reviewPanelTitle">REVIEW RESULTS</span>
                 <div class="tabs">
-                    <button class="tab active" onclick="showTab('review')">Review</button>
-                    <button class="tab" onclick="showTab('chat')">Chat</button>
+                    <button class="tab active" data-tab="review" onclick="showTab('review')" id="tabReview">Review</button>
+                    <button class="tab" data-tab="chat" onclick="showTab('chat')" id="tabChat">Chat</button>
+                    <button class="tab" data-tab="history" onclick="showTab('history')" id="tabHistory">History</button>
+                    <button class="tab" data-tab="presets" onclick="showTab('presets')" id="tabPresets">Presets</button>
                 </div>
             </div>
             <div class="panel-body">
                 <!-- Review Results -->
-                <div id="reviewResults">
+                <div id="reviewResults" class="tab-content active">
                     <div class="empty-state">
                         <div class="empty-state-icon">📝</div>
-                        <h3>No Review Yet</h3>
-                        <p>Paste your code and click 'Review Code' to get started</p>
+                        <h3 id="emptyTitle">No Review Yet</h3>
+                        <p id="emptyDesc">Paste your code and click 'Review Code' to get started</p>
                     </div>
                 </div>
 
-                <!-- Chat Panel (hidden by default) -->
-                <div id="chatPanel" style="display: none; height: 100%; flex-direction: column;">
+                <!-- Chat Panel -->
+                <div id="chatPanel" class="tab-content chat-container">
                     <div id="chatMessages" class="chat-messages"></div>
                     <div class="chat-input-container">
                         <input
@@ -110,33 +119,42 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- History Panel -->
+                <div id="historyPanel" class="tab-content">
+                    <div class="history-header">
+                        <h3 id="historyTitle">Review History</h3>
+                        <button class="btn btn-secondary btn-sm" onclick="clearHistory()" id="clearHistoryBtn">
+                            <span>🗑️</span>
+                            <span id="clearHistoryText">Clear All</span>
+                        </button>
+                    </div>
+                    <div id="historyList" class="history-list">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📜</div>
+                            <h3 id="historyEmptyTitle">No History</h3>
+                            <p id="historyEmptyDesc">Your review history will appear here</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Presets Panel -->
+                <div id="presetsPanel" class="tab-content">
+                    <div class="presets-header">
+                        <h3 id="presetsTitle">Review Presets</h3>
+                        <p id="presetsDesc">Quick review configurations for different scenarios</p>
+                    </div>
+                    <div id="presetsList" class="presets-list"></div>
+                </div>
             </div>
         </div>
     </main>
 
-    <!-- Hidden panel title for chat -->
+    <!-- Hidden elements for i18n -->
     <span id="chatPanelTitle" style="display: none;">ASK ABOUT CODE</span>
+    <span id="historyPanelTitle" style="display: none;">REVIEW HISTORY</span>
+    <span id="presetsPanelTitle" style="display: none;">REVIEW PRESETS</span>
 
     <script src="/static/js/app.js"></script>
-    <script>
-        // Tab switching
-        function showTab(tab) {
-            const reviewResults = document.getElementById('reviewResults');
-            const chatPanel = document.getElementById('chatPanel');
-            const tabs = document.querySelectorAll('.tab');
-
-            if (tab === 'review') {
-                reviewResults.style.display = 'block';
-                chatPanel.style.display = 'none';
-                tabs[0].classList.add('active');
-                tabs[1].classList.remove('active');
-            } else {
-                reviewResults.style.display = 'none';
-                chatPanel.style.display = 'flex';
-                tabs[0].classList.remove('active');
-                tabs[1].classList.add('active');
-            }
-        }
-    </script>
 </body>
 </html>

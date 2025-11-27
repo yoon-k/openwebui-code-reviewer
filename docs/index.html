@@ -3,72 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AI-powered code review tool supporting OpenAI, Ollama, and Anthropic. Get instant code analysis, security checks, performance optimization tips, and best practice suggestions.">
-    <meta name="keywords" content="code review, AI code analysis, OpenAI, Ollama, Claude, Anthropic, security analysis, performance optimization, code quality, static analysis, LLM, machine learning">
+    <meta name="description" content="AI Code Reviewer - Get instant AI-powered code reviews with security analysis, performance tips, and best practice suggestions. Supports 7 languages.">
+    <meta name="keywords" content="code review, AI, code analysis, security, performance, best practices, OpenAI, Ollama, Claude">
     <meta name="author" content="yoon-k">
-    <meta name="robots" content="index, follow">
-
-    <!-- Open Graph / Social Media -->
-    <meta property="og:title" content="AI Code Reviewer - Intelligent Code Analysis Tool">
-    <meta property="og:description" content="Get instant AI-powered code reviews with security analysis, performance tips, and best practice suggestions. Supports OpenAI, Ollama, and Claude.">
+    <meta property="og:title" content="AI Code Reviewer | OpenWebUI + LLM">
+    <meta property="og:description" content="AI-powered code review tool with security analysis and improvement suggestions">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://yoon-k.github.io/openwebui-code-reviewer/">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="AI Code Reviewer">
-    <meta name="twitter:description" content="Intelligent code analysis powered by AI">
-
-    <title>AI Code Reviewer | OpenWebUI + LLM Demo</title>
-
-    <!-- Fonts -->
+    <title>AI Code Reviewer | Demo</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🔍%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #10b981;
-            --danger: #ef4444;
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a25;
+            --bg-card: #16161f;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-muted: #6b6b7b;
+            --accent-primary: #6366f1;
+            --accent-secondary: #818cf8;
+            --success: #10b981;
             --warning: #f59e0b;
+            --error: #ef4444;
             --info: #3b82f6;
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --bg-input: #334155;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --border: #475569;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-            --radius: 12px;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #10b981 100%);
+            --gradient-glow: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(16, 185, 129, 0.2) 100%);
+            --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.3);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-dark);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
-            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 70%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+            animation: bgMove 20s ease-in-out infinite;
+        }
+
+        @keyframes bgMove {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(2%, 2%) rotate(2deg); }
         }
 
         .header {
-            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-dark) 100%);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
             z-index: 100;
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
         }
 
         .header-content {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -78,610 +99,1242 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 16px;
         }
 
         .logo-icon {
-            font-size: 1.75rem;
+            font-size: 2.5rem;
+            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
         }
 
         .logo h1 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
+        }
+
+        .logo-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
         }
 
         .lang-selector {
             display: flex;
-            gap: 0.25rem;
-            background: var(--bg-input);
-            padding: 0.25rem;
-            border-radius: 8px;
+            gap: 4px;
         }
 
         .lang-btn {
-            padding: 0.375rem 0.75rem;
-            border: none;
+            padding: 6px 10px;
             background: transparent;
+            border: 1px solid var(--border-color);
             color: var(--text-secondary);
+            border-radius: var(--radius-sm);
             cursor: pointer;
-            border-radius: 6px;
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             font-weight: 500;
-            transition: all 0.2s;
+            transition: all 0.3s;
         }
 
         .lang-btn:hover {
+            border-color: var(--accent-primary);
             color: var(--text-primary);
         }
 
         .lang-btn.active {
-            background: var(--primary);
+            background: var(--gradient-primary);
+            border-color: transparent;
             color: white;
         }
 
-        .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
         .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 24px 80px;
             text-align: center;
-            padding: 3rem 1rem;
+            z-index: 1;
         }
 
-        .hero h2 {
-            font-size: 2.5rem;
+        .hero-content { max-width: 900px; }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .hero-badge-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
             font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%);
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 span {
+            background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
-        .hero p {
-            font-size: 1.125rem;
+        .hero-description {
+            font-size: 1.25rem;
             color: var(--text-secondary);
             max-width: 600px;
-            margin: 0 auto 2rem;
+            margin: 0 auto 48px;
         }
 
-        .demo-badge {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background: rgba(99, 102, 241, 0.2);
-            border: 1px solid var(--primary);
-            border-radius: 20px;
-            color: var(--primary);
-            font-size: 0.875rem;
-            font-weight: 500;
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 60px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            margin-top: 80px;
+            padding: 32px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-item { text-align: center; }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
         }
 
         .features {
+            position: relative;
+            padding: 120px 24px;
+            z-index: 1;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 64px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 6px 16px;
+            background: var(--gradient-glow);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin: 3rem 0;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
         }
 
         .feature-card {
             background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            transition: all 0.3s;
         }
 
         .feature-card:hover {
             transform: translateY(-4px);
-            box-shadow: var(--shadow);
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-glow);
         }
 
         .feature-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-glow);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
         }
 
         .feature-card h3 {
-            font-size: 1.125rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
         }
 
         .feature-card p {
             color: var(--text-secondary);
-            font-size: 0.875rem;
+            font-size: 0.95rem;
         }
 
-        .demo-section {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 2rem;
-            margin: 2rem 0;
+        .presets {
+            position: relative;
+            padding: 120px 24px;
+            background: var(--bg-secondary);
+            z-index: 1;
         }
 
-        .demo-section h3 {
-            font-size: 1.25rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .demo-grid {
+        .presets-grid {
+            max-width: 1000px;
+            margin: 0 auto;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
         }
 
-        @media (max-width: 768px) {
-            .demo-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .code-panel {
-            background: var(--bg-dark);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .code-header {
-            padding: 0.75rem 1rem;
-            background: var(--bg-input);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-
-        .code-content {
-            padding: 1rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8125rem;
-            line-height: 1.7;
-            overflow-x: auto;
-        }
-
-        .code-content .keyword { color: #c792ea; }
-        .code-content .function { color: #82aaff; }
-        .code-content .string { color: #c3e88d; }
-        .code-content .comment { color: #546e7a; }
-        .code-content .number { color: #f78c6c; }
-
-        .result-panel {
-            background: var(--bg-dark);
-            border-radius: 8px;
-            padding: 1rem;
-        }
-
-        .score-display {
+        .preset-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 24px;
             text-align: center;
-            padding: 1rem;
+            transition: all 0.3s;
         }
 
-        .score-circle {
-            width: 80px;
-            height: 80px;
+        .preset-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .preset-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .preset-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .preset-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .demo {
+            position: relative;
+            padding: 120px 24px;
+            z-index: 1;
+        }
+
+        .demo-window {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .demo-header {
+            display: flex;
+            align-items: center;
+            padding: 16px 24px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .demo-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .demo-dot {
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            background: conic-gradient(var(--secondary) 288deg, var(--bg-input) 0);
+        }
+
+        .demo-dot.red { background: #ff5f57; }
+        .demo-dot.yellow { background: #ffbd2e; }
+        .demo-dot.green { background: #28ca41; }
+
+        .demo-title {
+            flex: 1;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .demo-content {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            min-height: 500px;
+        }
+
+        .demo-sidebar {
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            padding: 24px;
+        }
+
+        .demo-code {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            height: 200px;
+            overflow: auto;
+            margin-bottom: 16px;
+        }
+
+        .demo-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 0.75rem;
+            gap: 8px;
+        }
+
+        .demo-main {
+            padding: 24px;
+        }
+
+        .demo-result {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            height: 100%;
+        }
+
+        .demo-result-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .demo-score {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+        }
+
+        .demo-score-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent-primary) 252deg, var(--bg-tertiary) 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
         }
 
-        .score-circle::before {
+        .demo-score-circle::before {
             content: '';
             position: absolute;
             width: 64px;
             height: 64px;
-            background: var(--bg-dark);
+            background: var(--bg-primary);
             border-radius: 50%;
         }
 
-        .score-value {
+        .demo-score-value {
             position: relative;
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--secondary);
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .issue-item {
-            padding: 0.75rem;
-            background: var(--bg-card);
-            border-radius: 6px;
-            margin-top: 0.75rem;
-            border-left: 3px solid var(--warning);
+        .demo-score-text {
+            flex: 1;
         }
 
-        .issue-header {
+        .demo-score-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .demo-score-summary {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .demo-issue {
+            padding: 12px 16px;
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            border-left: 4px solid var(--warning);
+        }
+
+        .demo-issue.critical {
+            border-left-color: var(--error);
+        }
+
+        .demo-issue.medium {
+            border-left-color: var(--info);
+        }
+
+        .demo-issue.low {
+            border-left-color: var(--success);
+        }
+
+        .demo-issue-header {
             display: flex;
             justify-content: space-between;
-            font-size: 0.75rem;
-            margin-bottom: 0.5rem;
+            align-items: center;
+            margin-bottom: 4px;
         }
 
-        .issue-severity {
-            padding: 0.125rem 0.5rem;
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--warning);
-            border-radius: 4px;
+        .demo-issue-title {
             font-weight: 600;
+            font-size: 0.9rem;
         }
 
-        .issue-message {
-            font-size: 0.8125rem;
+        .demo-issue-severity {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
         }
 
-        .providers {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin: 2rem 0;
-            flex-wrap: wrap;
+        .demo-issue-severity.high {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
         }
 
-        .provider {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.25rem;
+        .demo-issue-severity.critical {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error);
+        }
+
+        .demo-issue-severity.medium {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--info);
+        }
+
+        .demo-issue-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .languages {
+            position: relative;
+            padding: 120px 24px;
+            z-index: 1;
+        }
+
+        .lang-grid {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+        }
+
+        .lang-card {
             background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-        }
-
-        .provider-logo {
-            font-size: 1.5rem;
-        }
-
-        .provider-name {
-            font-weight: 500;
-        }
-
-        .quick-start {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 2rem;
-            margin: 2rem 0;
-        }
-
-        .quick-start h3 {
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-        }
-
-        .code-block {
-            background: var(--bg-dark);
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 1rem 0;
-            overflow-x: auto;
-        }
-
-        .code-block code {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8125rem;
-            color: var(--secondary);
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: var(--bg-input);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            background: var(--border);
-        }
-
-        .cta-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 2rem 0;
-            flex-wrap: wrap;
-        }
-
-        footer {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 24px;
             text-align: center;
-            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .lang-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-primary);
+        }
+
+        .lang-flag {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .lang-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .lang-code {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .cta {
+            position: relative;
+            padding: 120px 24px;
+            background: var(--bg-secondary);
+            text-align: center;
+            z-index: 1;
+        }
+
+        .cta-content { max-width: 700px; margin: 0 auto; }
+
+        .cta h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .cta p {
             color: var(--text-secondary);
-            font-size: 0.875rem;
-            border-top: 1px solid var(--border);
-            margin-top: 3rem;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
         }
 
-        footer a {
-            color: var(--primary);
+        .footer {
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border-color);
+            padding: 48px 24px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer-logo span:first-child { font-size: 1.5rem; }
+        .footer-logo span:last-child {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .footer-link {
+            color: var(--text-secondary);
             text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
         }
 
-        footer a:hover {
-            text-decoration: underline;
+        .footer-link:hover { color: var(--text-primary); }
+
+        .footer-copy {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 1024px) {
+            .demo-content { grid-template-columns: 1fr; }
+            .demo-sidebar { border-right: none; border-bottom: 1px solid var(--border-color); }
+        }
+
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; gap: 16px; }
+            .stats-bar { flex-direction: column; gap: 24px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .presets-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-content { flex-direction: column; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .presets-grid { grid-template-columns: 1fr; }
+            .lang-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
+    <div class="bg-animation"></div>
+
     <header class="header">
         <div class="header-content">
             <div class="logo">
                 <span class="logo-icon">🔍</span>
-                <h1 id="title">AI Code Reviewer</h1>
+                <div>
+                    <h1 id="logoTitle">AI Code Reviewer</h1>
+                    <p class="logo-subtitle" id="logoSubtitle">OpenWebUI + LLM Powered</p>
+                </div>
             </div>
             <div class="lang-selector">
                 <button class="lang-btn active" onclick="setLanguage('en')">EN</button>
                 <button class="lang-btn" onclick="setLanguage('ko')">KO</button>
                 <button class="lang-btn" onclick="setLanguage('ja')">JA</button>
+                <button class="lang-btn" onclick="setLanguage('zh')">ZH</button>
+                <button class="lang-btn" onclick="setLanguage('es')">ES</button>
+                <button class="lang-btn" onclick="setLanguage('fr')">FR</button>
+                <button class="lang-btn" onclick="setLanguage('de')">DE</button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="main-container">
-        <!-- Hero Section -->
-        <section class="hero">
-            <span class="demo-badge" id="demoBadge">Live Demo</span>
-            <h2 id="heroTitle">AI-Powered Code Review</h2>
-            <p id="heroDesc">Get instant, intelligent code analysis with security checks, performance optimization tips, and best practice suggestions. Supports multiple LLM providers.</p>
-        </section>
-
-        <!-- Providers -->
-        <div class="providers">
-            <div class="provider">
-                <span class="provider-logo">🤖</span>
-                <span class="provider-name">OpenAI GPT-4</span>
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                <span id="heroBadge">AI-Powered Code Intelligence</span>
             </div>
-            <div class="provider">
-                <span class="provider-logo">🦙</span>
-                <span class="provider-name">Ollama (Local)</span>
+            <h1 id="heroTitle">Elevate Your Code Quality with <span>AI Reviews</span></h1>
+            <p class="hero-description" id="heroDesc">
+                Get instant security analysis, performance tips, and best practice suggestions. Support for 7 languages and multiple LLM providers.
+            </p>
+            <div class="hero-buttons">
+                <a href="https://github.com/yoon-gu/openwebui-code-reviewer" class="btn btn-primary" target="_blank">
+                    <span>⭐</span>
+                    <span id="btnGithub">View on GitHub</span>
+                </a>
+                <a href="#demo" class="btn btn-secondary">
+                    <span>👁️</span>
+                    <span id="btnDemo">See Demo</span>
+                </a>
             </div>
-            <div class="provider">
-                <span class="provider-logo">🧠</span>
-                <span class="provider-name">Anthropic Claude</span>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-value">6</div>
+                    <div class="stat-label" id="statAreas">Review Areas</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label" id="statPresets">Presets</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">7</div>
+                    <div class="stat-label" id="statLangs">Languages</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label" id="statProviders">LLM Providers</div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <!-- Features -->
-        <section class="features" id="features">
+    <section class="features" id="features">
+        <div class="section-header">
+            <span class="section-tag" id="featuresTag">Features</span>
+            <h2 id="featuresTitle">Comprehensive Code Analysis</h2>
+            <p id="featuresDesc">Everything you need for thorough code reviews</p>
+        </div>
+        <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">🔒</div>
                 <h3 id="feat1Title">Security Analysis</h3>
-                <p id="feat1Desc">Detect vulnerabilities, SQL injection, XSS, and other security issues automatically.</p>
+                <p id="feat1Desc">Detect vulnerabilities, injection risks, and security anti-patterns in your code automatically.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">⚡</div>
-                <h3 id="feat2Title">Performance Tips</h3>
-                <p id="feat2Desc">Identify bottlenecks, memory leaks, and optimization opportunities in your code.</p>
+                <h3 id="feat2Title">Performance Review</h3>
+                <p id="feat2Desc">Identify performance bottlenecks, memory leaks, and optimization opportunities.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">📊</div>
-                <h3 id="feat3Title">Code Quality Score</h3>
-                <p id="feat3Desc">Get an overall quality score with detailed breakdown of issues by severity.</p>
+                <div class="feature-icon">✨</div>
+                <h3 id="feat3Title">Code Quality</h3>
+                <p id="feat3Desc">Analyze maintainability, readability, and adherence to best practices.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">🌐</div>
-                <h3 id="feat4Title">Multi-Language Support</h3>
-                <p id="feat4Desc">Supports Python, JavaScript, TypeScript, Java, Go, Rust, and 10+ more languages.</p>
+                <div class="feature-icon">🐛</div>
+                <h3 id="feat4Title">Bug Detection</h3>
+                <p id="feat4Desc">Find potential bugs, logic errors, and edge cases before they reach production.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">💬</div>
-                <h3 id="feat5Title">Interactive Chat</h3>
-                <p id="feat5Desc">Ask questions about your code and get detailed explanations and suggestions.</p>
+                <h3 id="feat5Title">AI Chat Assistant</h3>
+                <p id="feat5Desc">Ask questions about your code in natural language and get intelligent explanations.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">🔧</div>
-                <h3 id="feat6Title">Best Practices</h3>
-                <p id="feat6Desc">Learn industry best practices and improve your coding skills over time.</p>
+                <div class="feature-icon">📜</div>
+                <h3 id="feat6Title">Review History</h3>
+                <p id="feat6Desc">Track all your code reviews with persistent history and easy export options.</p>
             </div>
-        </section>
-
-        <!-- Demo Section -->
-        <section class="demo-section">
-            <h3 id="demoTitle">See It In Action</h3>
-            <div class="demo-grid">
-                <div class="code-panel">
-                    <div class="code-header">
-                        <span>example.py</span>
-                        <span>Python</span>
-                    </div>
-                    <div class="code-content">
-<span class="keyword">def</span> <span class="function">get_user</span>(user_id):
-    <span class="comment"># SQL Injection vulnerability!</span>
-    query = <span class="string">f"SELECT * FROM users WHERE id = </span><span class="string">{user_id}"</span>
-    result = db.execute(query)
-    <span class="keyword">return</span> result
-
-<span class="keyword">def</span> <span class="function">process_data</span>(items):
-    output = []
-    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(items)):
-        output.append(items[i] * <span class="number">2</span>)
-    <span class="keyword">return</span> output
-                    </div>
-                </div>
-                <div class="result-panel">
-                    <div class="score-display">
-                        <div class="score-circle">
-                            <span class="score-value">80</span>
-                        </div>
-                        <div id="scoreLabel" style="color: var(--text-secondary); font-size: 0.875rem;">Quality Score</div>
-                    </div>
-                    <div class="issue-item">
-                        <div class="issue-header">
-                            <span class="issue-severity" id="severityHigh">HIGH</span>
-                            <span>Line 3</span>
-                        </div>
-                        <div class="issue-message" id="issueMsg1">SQL Injection vulnerability detected. Use parameterized queries instead.</div>
-                    </div>
-                    <div class="issue-item" style="border-left-color: var(--info);">
-                        <div class="issue-header">
-                            <span class="issue-severity" style="background: rgba(59, 130, 246, 0.2); color: var(--info);" id="severityMedium">MEDIUM</span>
-                            <span>Line 8-10</span>
-                        </div>
-                        <div class="issue-message" id="issueMsg2">Use list comprehension for better performance and readability.</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Quick Start -->
-        <section class="quick-start">
-            <h3 id="quickStartTitle">Quick Start</h3>
-            <div class="code-block">
-                <code>
-# Clone the repository<br>
-git clone https://github.com/yoon-k/openwebui-code-reviewer.git<br>
-cd openwebui-code-reviewer<br><br>
-
-# Install dependencies<br>
-pip install -r requirements.txt<br><br>
-
-# Configure your LLM provider<br>
-cp .env.example .env<br>
-# Edit .env with your API keys<br><br>
-
-# Run the application<br>
-python -m app.api
-                </code>
-            </div>
-        </section>
-
-        <!-- CTA Buttons -->
-        <div class="cta-buttons">
-            <a href="https://github.com/yoon-k/openwebui-code-reviewer" class="btn btn-primary" id="viewGithub">
-                <span>📦</span> View on GitHub
-            </a>
-            <a href="#features" class="btn btn-secondary" id="learnMore">
-                <span>📖</span> Learn More
-            </a>
         </div>
-    </main>
+    </section>
 
-    <!-- Footer -->
-    <footer>
-        <p id="footerText">
-            Built with Flask + LangChain | Supports OpenAI, Ollama, Anthropic<br>
-            <a href="https://github.com/yoon-k">GitHub</a> • MIT License
-        </p>
+    <section class="presets">
+        <div class="section-header">
+            <span class="section-tag" id="presetsTag">Presets</span>
+            <h2 id="presetsTitle">5 Review Presets</h2>
+            <p id="presetsDesc">Quick configurations for different review scenarios</p>
+        </div>
+        <div class="presets-grid">
+            <div class="preset-card">
+                <div class="preset-icon">🔒</div>
+                <div class="preset-name">Security Audit</div>
+                <div class="preset-desc">Focus on vulnerabilities</div>
+            </div>
+            <div class="preset-card">
+                <div class="preset-icon">⚡</div>
+                <div class="preset-name">Performance Review</div>
+                <div class="preset-desc">Optimize speed</div>
+            </div>
+            <div class="preset-card">
+                <div class="preset-icon">✨</div>
+                <div class="preset-name">Code Quality</div>
+                <div class="preset-desc">Best practices</div>
+            </div>
+            <div class="preset-card">
+                <div class="preset-icon">🔍</div>
+                <div class="preset-name">Full Review</div>
+                <div class="preset-desc">Complete analysis</div>
+            </div>
+            <div class="preset-card">
+                <div class="preset-icon">⚡</div>
+                <div class="preset-name">Quick Check</div>
+                <div class="preset-desc">Fast feedback</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo" id="demo">
+        <div class="section-header">
+            <span class="section-tag" id="demoTag">Demo</span>
+            <h2 id="demoTitle">See It In Action</h2>
+            <p id="demoDesc">Experience AI-powered code review</p>
+        </div>
+        <div class="demo-window">
+            <div class="demo-header">
+                <div class="demo-dots">
+                    <span class="demo-dot red"></span>
+                    <span class="demo-dot yellow"></span>
+                    <span class="demo-dot green"></span>
+                </div>
+                <span class="demo-title">AI Code Reviewer</span>
+                <div style="width: 52px;"></div>
+            </div>
+            <div class="demo-content">
+                <div class="demo-sidebar">
+                    <div class="demo-code">
+<span style="color: #7c3aed;">function</span> <span style="color: #22c55e;">getUserData</span>(userId) {
+  <span style="color: #6b7280;">// SQL injection vulnerability</span>
+  <span style="color: #7c3aed;">const</span> query = <span style="color: #f59e0b;">`SELECT * FROM users 
+    WHERE id = ${userId}`</span>;
+  
+  <span style="color: #7c3aed;">const</span> password = <span style="color: #f59e0b;">"admin123"</span>;
+  
+  <span style="color: #7c3aed;">return</span> db.<span style="color: #22c55e;">execute</span>(query);
+}</div>
+                    <button class="demo-btn">
+                        <span>🔍</span>
+                        <span>Review Code</span>
+                    </button>
+                </div>
+                <div class="demo-main">
+                    <div class="demo-result">
+                        <div class="demo-result-title">
+                            <span>📊</span>
+                            Review Results
+                        </div>
+                        <div class="demo-score">
+                            <div class="demo-score-circle">
+                                <span class="demo-score-value">70</span>
+                            </div>
+                            <div class="demo-score-text">
+                                <div class="demo-score-label">Code Quality Score</div>
+                                <div class="demo-score-summary">2 critical issues, 1 warning found</div>
+                            </div>
+                        </div>
+                        <div class="demo-issue critical">
+                            <div class="demo-issue-header">
+                                <span class="demo-issue-title">SQL Injection Vulnerability</span>
+                                <span class="demo-issue-severity critical">Critical</span>
+                            </div>
+                            <div class="demo-issue-desc">Use parameterized queries instead of string interpolation</div>
+                        </div>
+                        <div class="demo-issue critical">
+                            <div class="demo-issue-header">
+                                <span class="demo-issue-title">Hardcoded Credentials</span>
+                                <span class="demo-issue-severity critical">Critical</span>
+                            </div>
+                            <div class="demo-issue-desc">Remove hardcoded password and use environment variables</div>
+                        </div>
+                        <div class="demo-issue">
+                            <div class="demo-issue-header">
+                                <span class="demo-issue-title">Missing Error Handling</span>
+                                <span class="demo-issue-severity high">High</span>
+                            </div>
+                            <div class="demo-issue-desc">Add try-catch block for database operations</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="languages" id="languages">
+        <div class="section-header">
+            <span class="section-tag" id="langsTag">Global</span>
+            <h2 id="langsTitle">7 Languages Supported</h2>
+            <p id="langsDesc">Use the tool in your preferred language</p>
+        </div>
+        <div class="lang-grid">
+            <div class="lang-card">
+                <div class="lang-flag">🇺🇸</div>
+                <div class="lang-name">English</div>
+                <div class="lang-code">EN</div>
+            </div>
+            <div class="lang-card">
+                <div class="lang-flag">🇰🇷</div>
+                <div class="lang-name">한국어</div>
+                <div class="lang-code">KO</div>
+            </div>
+            <div class="lang-card">
+                <div class="lang-flag">🇯🇵</div>
+                <div class="lang-name">日本語</div>
+                <div class="lang-code">JA</div>
+            </div>
+            <div class="lang-card">
+                <div class="lang-flag">🇨🇳</div>
+                <div class="lang-name">中文</div>
+                <div class="lang-code">ZH</div>
+            </div>
+            <div class="lang-card">
+                <div class="lang-flag">🇪🇸</div>
+                <div class="lang-name">Español</div>
+                <div class="lang-code">ES</div>
+            </div>
+            <div class="lang-card">
+                <div class="lang-flag">🇫🇷</div>
+                <div class="lang-name">Français</div>
+                <div class="lang-code">FR</div>
+            </div>
+            <div class="lang-card">
+                <div class="lang-flag">🇩🇪</div>
+                <div class="lang-name">Deutsch</div>
+                <div class="lang-code">DE</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="cta-content">
+            <h2 id="ctaTitle">Ready to Improve Your Code?</h2>
+            <p id="ctaDesc">Deploy your own AI Code Reviewer with OpenWebUI and start getting actionable insights today.</p>
+            <div class="hero-buttons">
+                <a href="https://github.com/yoon-gu/openwebui-code-reviewer" class="btn btn-primary" target="_blank">
+                    <span>🚀</span>
+                    <span id="ctaBtnStart">Get Started</span>
+                </a>
+                <a href="https://github.com/yoon-gu/openwebui-code-reviewer/blob/main/README.md" class="btn btn-secondary" target="_blank">
+                    <span>📖</span>
+                    <span id="ctaBtnDocs">Documentation</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span>🔍</span>
+                <span>AI Code Reviewer</span>
+            </div>
+            <div class="footer-links">
+                <a href="https://github.com/yoon-gu/openwebui-code-reviewer" class="footer-link" target="_blank">GitHub</a>
+                <a href="https://github.com/yoon-gu/openwebui-code-reviewer/issues" class="footer-link" target="_blank">Issues</a>
+                <a href="https://github.com/yoon-gu" class="footer-link" target="_blank">Author</a>
+            </div>
+            <p class="footer-copy">© 2024 AI Code Reviewer. MIT License.</p>
+        </div>
     </footer>
 
     <script>
         const i18n = {
             en: {
-                title: "AI Code Reviewer",
-                demoBadge: "Live Demo",
-                heroTitle: "AI-Powered Code Review",
-                heroDesc: "Get instant, intelligent code analysis with security checks, performance optimization tips, and best practice suggestions. Supports multiple LLM providers.",
-                feat1Title: "Security Analysis",
-                feat1Desc: "Detect vulnerabilities, SQL injection, XSS, and other security issues automatically.",
-                feat2Title: "Performance Tips",
-                feat2Desc: "Identify bottlenecks, memory leaks, and optimization opportunities in your code.",
-                feat3Title: "Code Quality Score",
-                feat3Desc: "Get an overall quality score with detailed breakdown of issues by severity.",
-                feat4Title: "Multi-Language Support",
-                feat4Desc: "Supports Python, JavaScript, TypeScript, Java, Go, Rust, and 10+ more languages.",
-                feat5Title: "Interactive Chat",
-                feat5Desc: "Ask questions about your code and get detailed explanations and suggestions.",
-                feat6Title: "Best Practices",
-                feat6Desc: "Learn industry best practices and improve your coding skills over time.",
-                demoTitle: "See It In Action",
-                scoreLabel: "Quality Score",
-                severityHigh: "HIGH",
-                severityMedium: "MEDIUM",
-                issueMsg1: "SQL Injection vulnerability detected. Use parameterized queries instead.",
-                issueMsg2: "Use list comprehension for better performance and readability.",
-                quickStartTitle: "Quick Start",
-                viewGithub: "View on GitHub",
-                learnMore: "Learn More",
-                footerText: "Built with Flask + LangChain | Supports OpenAI, Ollama, Anthropic"
+                logoTitle: 'AI Code Reviewer',
+                logoSubtitle: 'OpenWebUI + LLM Powered',
+                heroBadge: 'AI-Powered Code Intelligence',
+                heroTitle: 'Elevate Your Code Quality with <span>AI Reviews</span>',
+                heroDesc: 'Get instant security analysis, performance tips, and best practice suggestions. Support for 7 languages and multiple LLM providers.',
+                btnGithub: 'View on GitHub',
+                btnDemo: 'See Demo',
+                statAreas: 'Review Areas',
+                statPresets: 'Presets',
+                statLangs: 'Languages',
+                statProviders: 'LLM Providers',
+                featuresTag: 'Features',
+                featuresTitle: 'Comprehensive Code Analysis',
+                featuresDesc: 'Everything you need for thorough code reviews',
+                feat1Title: 'Security Analysis',
+                feat1Desc: 'Detect vulnerabilities, injection risks, and security anti-patterns in your code automatically.',
+                feat2Title: 'Performance Review',
+                feat2Desc: 'Identify performance bottlenecks, memory leaks, and optimization opportunities.',
+                feat3Title: 'Code Quality',
+                feat3Desc: 'Analyze maintainability, readability, and adherence to best practices.',
+                feat4Title: 'Bug Detection',
+                feat4Desc: 'Find potential bugs, logic errors, and edge cases before they reach production.',
+                feat5Title: 'AI Chat Assistant',
+                feat5Desc: 'Ask questions about your code in natural language and get intelligent explanations.',
+                feat6Title: 'Review History',
+                feat6Desc: 'Track all your code reviews with persistent history and easy export options.',
+                presetsTag: 'Presets',
+                presetsTitle: '5 Review Presets',
+                presetsDesc: 'Quick configurations for different review scenarios',
+                demoTag: 'Demo',
+                demoTitle: 'See It In Action',
+                demoDesc: 'Experience AI-powered code review',
+                langsTag: 'Global',
+                langsTitle: '7 Languages Supported',
+                langsDesc: 'Use the tool in your preferred language',
+                ctaTitle: 'Ready to Improve Your Code?',
+                ctaDesc: 'Deploy your own AI Code Reviewer with OpenWebUI and start getting actionable insights today.',
+                ctaBtnStart: 'Get Started',
+                ctaBtnDocs: 'Documentation'
             },
             ko: {
-                title: "AI 코드 리뷰어",
-                demoBadge: "라이브 데모",
-                heroTitle: "AI 기반 코드 리뷰",
-                heroDesc: "보안 검사, 성능 최적화 팁, 모범 사례 제안이 포함된 즉각적이고 지능적인 코드 분석을 받아보세요. 다양한 LLM 제공업체를 지원합니다.",
-                feat1Title: "보안 분석",
-                feat1Desc: "취약점, SQL 인젝션, XSS 및 기타 보안 문제를 자동으로 감지합니다.",
-                feat2Title: "성능 팁",
-                feat2Desc: "코드의 병목 현상, 메모리 누수 및 최적화 기회를 식별합니다.",
-                feat3Title: "코드 품질 점수",
-                feat3Desc: "심각도별 이슈 상세 분석과 함께 전체 품질 점수를 받아보세요.",
-                feat4Title: "다중 언어 지원",
-                feat4Desc: "Python, JavaScript, TypeScript, Java, Go, Rust 외 10개 이상의 언어를 지원합니다.",
-                feat5Title: "대화형 채팅",
-                feat5Desc: "코드에 대해 질문하고 상세한 설명과 제안을 받으세요.",
-                feat6Title: "모범 사례",
-                feat6Desc: "업계 모범 사례를 배우고 시간이 지남에 따라 코딩 실력을 향상시키세요.",
-                demoTitle: "실제 동작 보기",
-                scoreLabel: "품질 점수",
-                severityHigh: "높음",
-                severityMedium: "보통",
-                issueMsg1: "SQL 인젝션 취약점이 감지되었습니다. 매개변수화된 쿼리를 사용하세요.",
-                issueMsg2: "더 나은 성능과 가독성을 위해 리스트 컴프리헨션을 사용하세요.",
-                quickStartTitle: "빠른 시작",
-                viewGithub: "GitHub에서 보기",
-                learnMore: "자세히 알아보기",
-                footerText: "Flask + LangChain으로 제작 | OpenAI, Ollama, Anthropic 지원"
+                logoTitle: 'AI 코드 리뷰어',
+                logoSubtitle: 'OpenWebUI + LLM 기반',
+                heroBadge: 'AI 기반 코드 인텔리전스',
+                heroTitle: '<span>AI 리뷰</span>로 코드 품질 향상',
+                heroDesc: '즉각적인 보안 분석, 성능 팁, 모범 사례 제안을 받으세요. 7개 언어와 다양한 LLM 제공자 지원.',
+                btnGithub: 'GitHub에서 보기',
+                btnDemo: '데모 보기',
+                statAreas: '리뷰 영역',
+                statPresets: '프리셋',
+                statLangs: '언어',
+                statProviders: 'LLM 제공자',
+                featuresTag: '기능',
+                featuresTitle: '종합적인 코드 분석',
+                featuresDesc: '철저한 코드 리뷰에 필요한 모든 것',
+                feat1Title: '보안 분석',
+                feat1Desc: '취약점, 인젝션 위험, 보안 안티패턴을 자동으로 감지합니다.',
+                feat2Title: '성능 리뷰',
+                feat2Desc: '성능 병목 현상, 메모리 누수, 최적화 기회를 식별합니다.',
+                feat3Title: '코드 품질',
+                feat3Desc: '유지보수성, 가독성, 모범 사례 준수를 분석합니다.',
+                feat4Title: '버그 탐지',
+                feat4Desc: '프로덕션에 도달하기 전에 잠재적 버그, 로직 오류, 엣지 케이스를 찾습니다.',
+                feat5Title: 'AI 채팅 어시스턴트',
+                feat5Desc: '자연어로 코드에 대해 질문하고 지능적인 설명을 받으세요.',
+                feat6Title: '리뷰 히스토리',
+                feat6Desc: '지속적인 히스토리와 쉬운 내보내기 옵션으로 모든 코드 리뷰를 추적하세요.',
+                presetsTag: '프리셋',
+                presetsTitle: '5개 리뷰 프리셋',
+                presetsDesc: '다양한 리뷰 시나리오를 위한 빠른 구성',
+                demoTag: '데모',
+                demoTitle: '실제로 확인하세요',
+                demoDesc: 'AI 기반 코드 리뷰를 경험하세요',
+                langsTag: '글로벌',
+                langsTitle: '7개 언어 지원',
+                langsDesc: '선호하는 언어로 도구를 사용하세요',
+                ctaTitle: '코드를 개선할 준비가 되셨나요?',
+                ctaDesc: 'OpenWebUI로 자신만의 AI 코드 리뷰어를 배포하고 오늘부터 실행 가능한 인사이트를 얻으세요.',
+                ctaBtnStart: '시작하기',
+                ctaBtnDocs: '문서'
             },
             ja: {
-                title: "AIコードレビューア",
-                demoBadge: "ライブデモ",
-                heroTitle: "AI搭載コードレビュー",
-                heroDesc: "セキュリティチェック、パフォーマンス最適化のヒント、ベストプラクティスの提案を含む、即座のインテリジェントなコード分析を取得できます。複数のLLMプロバイダーをサポート。",
-                feat1Title: "セキュリティ分析",
-                feat1Desc: "脆弱性、SQLインジェクション、XSSなどのセキュリティ問題を自動的に検出します。",
-                feat2Title: "パフォーマンスのヒント",
-                feat2Desc: "コード内のボトルネック、メモリリーク、最適化の機会を特定します。",
-                feat3Title: "コード品質スコア",
-                feat3Desc: "重大度別の問題の詳細な内訳とともに、全体的な品質スコアを取得できます。",
-                feat4Title: "多言語サポート",
-                feat4Desc: "Python、JavaScript、TypeScript、Java、Go、Rust、その他10以上の言語をサポート。",
-                feat5Title: "インタラクティブチャット",
-                feat5Desc: "コードについて質問し、詳細な説明と提案を受け取れます。",
-                feat6Title: "ベストプラクティス",
-                feat6Desc: "業界のベストプラクティスを学び、時間とともにコーディングスキルを向上させましょう。",
-                demoTitle: "実際の動作を見る",
-                scoreLabel: "品質スコア",
-                severityHigh: "高",
-                severityMedium: "中",
-                issueMsg1: "SQLインジェクションの脆弱性が検出されました。パラメータ化されたクエリを使用してください。",
-                issueMsg2: "パフォーマンスと可読性を向上させるためにリスト内包表記を使用してください。",
-                quickStartTitle: "クイックスタート",
-                viewGithub: "GitHubで見る",
-                learnMore: "詳細を見る",
-                footerText: "Flask + LangChainで構築 | OpenAI、Ollama、Anthropicをサポート"
+                logoTitle: 'AIコードレビューア',
+                logoSubtitle: 'OpenWebUI + LLM搭載',
+                heroBadge: 'AI駆動コードインテリジェンス',
+                heroTitle: '<span>AIレビュー</span>でコード品質を向上',
+                heroDesc: 'セキュリティ分析、パフォーマンスのヒント、ベストプラクティスの提案を即座に取得。7言語と複数のLLMプロバイダーをサポート。',
+                btnGithub: 'GitHubで見る',
+                btnDemo: 'デモを見る',
+                statAreas: 'レビュー領域',
+                statPresets: 'プリセット',
+                statLangs: '言語',
+                statProviders: 'LLMプロバイダー',
+                featuresTag: '機能',
+                featuresTitle: '包括的なコード分析',
+                featuresDesc: '徹底したコードレビューに必要なすべて',
+                feat1Title: 'セキュリティ分析',
+                feat1Desc: '脆弱性、インジェクションリスク、セキュリティアンチパターンを自動的に検出。',
+                feat2Title: 'パフォーマンスレビュー',
+                feat2Desc: 'パフォーマンスのボトルネック、メモリリーク、最適化の機会を特定。',
+                feat3Title: 'コード品質',
+                feat3Desc: '保守性、可読性、ベストプラクティスへの準拠を分析。',
+                feat4Title: 'バグ検出',
+                feat4Desc: '本番環境に到達する前に潜在的なバグ、ロジックエラー、エッジケースを発見。',
+                feat5Title: 'AIチャットアシスタント',
+                feat5Desc: '自然言語でコードについて質問し、インテリジェントな説明を取得。',
+                feat6Title: 'レビュー履歴',
+                feat6Desc: '永続的な履歴と簡単なエクスポートオプションですべてのコードレビューを追跡。',
+                presetsTag: 'プリセット',
+                presetsTitle: '5つのレビュープリセット',
+                presetsDesc: 'さまざまなレビューシナリオの素早い設定',
+                demoTag: 'デモ',
+                demoTitle: '実際に見てみましょう',
+                demoDesc: 'AI駆動のコードレビューを体験',
+                langsTag: 'グローバル',
+                langsTitle: '7言語対応',
+                langsDesc: 'お好みの言語でツールを使用',
+                ctaTitle: 'コードを改善する準備はできましたか？',
+                ctaDesc: 'OpenWebUIで独自のAIコードレビューアをデプロイし、今日から実行可能なインサイトを取得。',
+                ctaBtnStart: '始める',
+                ctaBtnDocs: 'ドキュメント'
+            },
+            zh: {
+                logoTitle: 'AI代码审查器',
+                logoSubtitle: 'OpenWebUI + LLM驱动',
+                heroBadge: 'AI驱动代码智能',
+                heroTitle: '用<span>AI审查</span>提升代码质量',
+                heroDesc: '获取即时安全分析、性能建议和最佳实践建议。支持7种语言和多个LLM提供商。',
+                btnGithub: '在GitHub上查看',
+                btnDemo: '查看演示',
+                statAreas: '审查领域',
+                statPresets: '预设',
+                statLangs: '语言',
+                statProviders: 'LLM提供商',
+                featuresTag: '功能',
+                featuresTitle: '全面的代码分析',
+                featuresDesc: '彻底代码审查所需的一切',
+                feat1Title: '安全分析',
+                feat1Desc: '自动检测漏洞、注入风险和安全反模式。',
+                feat2Title: '性能审查',
+                feat2Desc: '识别性能瓶颈、内存泄漏和优化机会。',
+                feat3Title: '代码质量',
+                feat3Desc: '分析可维护性、可读性和最佳实践遵守情况。',
+                feat4Title: '错误检测',
+                feat4Desc: '在到达生产环境之前发现潜在的错误、逻辑错误和边缘情况。',
+                feat5Title: 'AI聊天助手',
+                feat5Desc: '用自然语言询问代码问题，获得智能解释。',
+                feat6Title: '审查历史',
+                feat6Desc: '通过持久历史和简单导出选项跟踪所有代码审查。',
+                presetsTag: '预设',
+                presetsTitle: '5个审查预设',
+                presetsDesc: '不同审查场景的快速配置',
+                demoTag: '演示',
+                demoTitle: '实际体验',
+                demoDesc: '体验AI驱动的代码审查',
+                langsTag: '全球化',
+                langsTitle: '支持7种语言',
+                langsDesc: '使用您喜欢的语言',
+                ctaTitle: '准备好改进您的代码了吗？',
+                ctaDesc: '使用OpenWebUI部署您自己的AI代码审查器，今天就开始获取可执行的洞察。',
+                ctaBtnStart: '开始使用',
+                ctaBtnDocs: '文档'
+            },
+            es: {
+                logoTitle: 'Revisor de Código IA',
+                logoSubtitle: 'Potenciado por OpenWebUI + LLM',
+                heroBadge: 'Inteligencia de Código con IA',
+                heroTitle: 'Eleva la Calidad de tu Código con <span>Revisiones IA</span>',
+                heroDesc: 'Obtén análisis de seguridad instantáneo, consejos de rendimiento y sugerencias de mejores prácticas. Soporte para 7 idiomas y múltiples proveedores LLM.',
+                btnGithub: 'Ver en GitHub',
+                btnDemo: 'Ver Demo',
+                statAreas: 'Áreas de Revisión',
+                statPresets: 'Presets',
+                statLangs: 'Idiomas',
+                statProviders: 'Proveedores LLM',
+                featuresTag: 'Características',
+                featuresTitle: 'Análisis de Código Completo',
+                featuresDesc: 'Todo lo que necesitas para revisiones de código exhaustivas',
+                feat1Title: 'Análisis de Seguridad',
+                feat1Desc: 'Detecta vulnerabilidades, riesgos de inyección y anti-patrones de seguridad automáticamente.',
+                feat2Title: 'Revisión de Rendimiento',
+                feat2Desc: 'Identifica cuellos de botella, fugas de memoria y oportunidades de optimización.',
+                feat3Title: 'Calidad de Código',
+                feat3Desc: 'Analiza mantenibilidad, legibilidad y adherencia a mejores prácticas.',
+                feat4Title: 'Detección de Bugs',
+                feat4Desc: 'Encuentra bugs potenciales, errores de lógica y casos límite antes de producción.',
+                feat5Title: 'Asistente Chat IA',
+                feat5Desc: 'Haz preguntas sobre tu código en lenguaje natural y obtén explicaciones inteligentes.',
+                feat6Title: 'Historial de Revisiones',
+                feat6Desc: 'Rastrea todas tus revisiones de código con historial persistente y opciones de exportación fáciles.',
+                presetsTag: 'Presets',
+                presetsTitle: '5 Presets de Revisión',
+                presetsDesc: 'Configuraciones rápidas para diferentes escenarios de revisión',
+                demoTag: 'Demo',
+                demoTitle: 'Míralo en Acción',
+                demoDesc: 'Experimenta la revisión de código con IA',
+                langsTag: 'Global',
+                langsTitle: '7 Idiomas Soportados',
+                langsDesc: 'Usa la herramienta en tu idioma preferido',
+                ctaTitle: '¿Listo para Mejorar tu Código?',
+                ctaDesc: 'Despliega tu propio Revisor de Código IA con OpenWebUI y comienza a obtener insights accionables hoy.',
+                ctaBtnStart: 'Comenzar',
+                ctaBtnDocs: 'Documentación'
+            },
+            fr: {
+                logoTitle: 'Réviseur de Code IA',
+                logoSubtitle: 'Propulsé par OpenWebUI + LLM',
+                heroBadge: 'Intelligence de Code par IA',
+                heroTitle: 'Élevez la Qualité de Votre Code avec des <span>Revues IA</span>',
+                heroDesc: 'Obtenez une analyse de sécurité instantanée, des conseils de performance et des suggestions de meilleures pratiques. Support de 7 langues et plusieurs fournisseurs LLM.',
+                btnGithub: 'Voir sur GitHub',
+                btnDemo: 'Voir la Démo',
+                statAreas: 'Domaines de Revue',
+                statPresets: 'Préréglages',
+                statLangs: 'Langues',
+                statProviders: 'Fournisseurs LLM',
+                featuresTag: 'Fonctionnalités',
+                featuresTitle: 'Analyse de Code Complète',
+                featuresDesc: 'Tout ce dont vous avez besoin pour des revues de code approfondies',
+                feat1Title: 'Analyse de Sécurité',
+                feat1Desc: 'Détectez automatiquement les vulnérabilités, les risques d\'injection et les anti-patterns de sécurité.',
+                feat2Title: 'Revue de Performance',
+                feat2Desc: 'Identifiez les goulots d\'étranglement, les fuites de mémoire et les opportunités d\'optimisation.',
+                feat3Title: 'Qualité du Code',
+                feat3Desc: 'Analysez la maintenabilité, la lisibilité et l\'adhésion aux meilleures pratiques.',
+                feat4Title: 'Détection de Bugs',
+                feat4Desc: 'Trouvez les bugs potentiels, les erreurs de logique et les cas limites avant la production.',
+                feat5Title: 'Assistant Chat IA',
+                feat5Desc: 'Posez des questions sur votre code en langage naturel et obtenez des explications intelligentes.',
+                feat6Title: 'Historique des Revues',
+                feat6Desc: 'Suivez toutes vos revues de code avec un historique persistant et des options d\'export faciles.',
+                presetsTag: 'Préréglages',
+                presetsTitle: '5 Préréglages de Revue',
+                presetsDesc: 'Configurations rapides pour différents scénarios de revue',
+                demoTag: 'Démo',
+                demoTitle: 'Voyez-le en Action',
+                demoDesc: 'Découvrez la revue de code par IA',
+                langsTag: 'Global',
+                langsTitle: '7 Langues Supportées',
+                langsDesc: 'Utilisez l\'outil dans votre langue préférée',
+                ctaTitle: 'Prêt à Améliorer Votre Code?',
+                ctaDesc: 'Déployez votre propre Réviseur de Code IA avec OpenWebUI et obtenez des insights actionnables dès aujourd\'hui.',
+                ctaBtnStart: 'Commencer',
+                ctaBtnDocs: 'Documentation'
+            },
+            de: {
+                logoTitle: 'KI-Code-Reviewer',
+                logoSubtitle: 'Powered by OpenWebUI + LLM',
+                heroBadge: 'KI-gestützte Code-Intelligenz',
+                heroTitle: 'Verbessern Sie Ihre Code-Qualität mit <span>KI-Reviews</span>',
+                heroDesc: 'Erhalten Sie sofortige Sicherheitsanalysen, Performance-Tipps und Best-Practice-Vorschläge. Unterstützung für 7 Sprachen und mehrere LLM-Anbieter.',
+                btnGithub: 'Auf GitHub ansehen',
+                btnDemo: 'Demo ansehen',
+                statAreas: 'Review-Bereiche',
+                statPresets: 'Voreinstellungen',
+                statLangs: 'Sprachen',
+                statProviders: 'LLM-Anbieter',
+                featuresTag: 'Funktionen',
+                featuresTitle: 'Umfassende Code-Analyse',
+                featuresDesc: 'Alles was Sie für gründliche Code-Reviews brauchen',
+                feat1Title: 'Sicherheitsanalyse',
+                feat1Desc: 'Erkennen Sie automatisch Schwachstellen, Injection-Risiken und Sicherheits-Antimuster.',
+                feat2Title: 'Performance-Review',
+                feat2Desc: 'Identifizieren Sie Performance-Engpässe, Speicherlecks und Optimierungsmöglichkeiten.',
+                feat3Title: 'Code-Qualität',
+                feat3Desc: 'Analysieren Sie Wartbarkeit, Lesbarkeit und Einhaltung von Best Practices.',
+                feat4Title: 'Bug-Erkennung',
+                feat4Desc: 'Finden Sie potenzielle Bugs, Logikfehler und Grenzfälle vor der Produktion.',
+                feat5Title: 'KI-Chat-Assistent',
+                feat5Desc: 'Stellen Sie Fragen zu Ihrem Code in natürlicher Sprache und erhalten Sie intelligente Erklärungen.',
+                feat6Title: 'Review-Verlauf',
+                feat6Desc: 'Verfolgen Sie alle Ihre Code-Reviews mit persistentem Verlauf und einfachen Export-Optionen.',
+                presetsTag: 'Voreinstellungen',
+                presetsTitle: '5 Review-Voreinstellungen',
+                presetsDesc: 'Schnelle Konfigurationen für verschiedene Review-Szenarien',
+                demoTag: 'Demo',
+                demoTitle: 'Sehen Sie es in Aktion',
+                demoDesc: 'Erleben Sie KI-gesteuerte Code-Reviews',
+                langsTag: 'Global',
+                langsTitle: '7 Sprachen unterstützt',
+                langsDesc: 'Verwenden Sie das Tool in Ihrer bevorzugten Sprache',
+                ctaTitle: 'Bereit, Ihren Code zu verbessern?',
+                ctaDesc: 'Stellen Sie Ihren eigenen KI-Code-Reviewer mit OpenWebUI bereit und erhalten Sie heute umsetzbare Erkenntnisse.',
+                ctaBtnStart: 'Loslegen',
+                ctaBtnDocs: 'Dokumentation'
             }
         };
 
@@ -689,39 +1342,44 @@ python -m app.api
 
         function setLanguage(lang) {
             currentLang = lang;
-            const t = i18n[lang];
-
-            document.getElementById('title').textContent = t.title;
-            document.getElementById('demoBadge').textContent = t.demoBadge;
-            document.getElementById('heroTitle').textContent = t.heroTitle;
-            document.getElementById('heroDesc').textContent = t.heroDesc;
-            document.getElementById('feat1Title').textContent = t.feat1Title;
-            document.getElementById('feat1Desc').textContent = t.feat1Desc;
-            document.getElementById('feat2Title').textContent = t.feat2Title;
-            document.getElementById('feat2Desc').textContent = t.feat2Desc;
-            document.getElementById('feat3Title').textContent = t.feat3Title;
-            document.getElementById('feat3Desc').textContent = t.feat3Desc;
-            document.getElementById('feat4Title').textContent = t.feat4Title;
-            document.getElementById('feat4Desc').textContent = t.feat4Desc;
-            document.getElementById('feat5Title').textContent = t.feat5Title;
-            document.getElementById('feat5Desc').textContent = t.feat5Desc;
-            document.getElementById('feat6Title').textContent = t.feat6Title;
-            document.getElementById('feat6Desc').textContent = t.feat6Desc;
-            document.getElementById('demoTitle').textContent = t.demoTitle;
-            document.getElementById('scoreLabel').textContent = t.scoreLabel;
-            document.getElementById('severityHigh').textContent = t.severityHigh;
-            document.getElementById('severityMedium').textContent = t.severityMedium;
-            document.getElementById('issueMsg1').textContent = t.issueMsg1;
-            document.getElementById('issueMsg2').textContent = t.issueMsg2;
-            document.getElementById('quickStartTitle').textContent = t.quickStartTitle;
-            document.getElementById('viewGithub').innerHTML = `<span>📦</span> ${t.viewGithub}`;
-            document.getElementById('learnMore').innerHTML = `<span>📖</span> ${t.learnMore}`;
-            document.getElementById('footerText').innerHTML = `${t.footerText}<br><a href="https://github.com/yoon-k">GitHub</a> • MIT License`;
+            const texts = i18n[lang];
+            
+            Object.keys(texts).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    if (key === 'heroTitle') {
+                        element.innerHTML = texts[key];
+                    } else {
+                        element.textContent = texts[key];
+                    }
+                }
+            });
 
             document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
+                btn.classList.remove('active');
             });
+            event.target.classList.add('active');
+
+            localStorage.setItem('preferredLanguage', lang);
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('preferredLanguage');
+            if (saved && i18n[saved]) {
+                const btn = document.querySelector(`.lang-btn[onclick="setLanguage('${saved}')"]`);
+                if (btn) btn.click();
+            }
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
     </script>
 </body>
 </html>
