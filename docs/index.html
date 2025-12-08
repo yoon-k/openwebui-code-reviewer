@@ -1157,45 +1157,193 @@
             }
         };
 
-        // Simulation response
-        const simulationResponse = {
-            score: 45,
-            summary: 'Critical security vulnerabilities detected. The code contains SQL injection vulnerability and hardcoded credentials.',
-            issues: [
-                {
+        // Real Code Analyzer - Detects actual issues in submitted code
+        const CodeAnalyzer = {
+            patterns: {
+                // Security vulnerabilities
+                sqlInjection: {
+                    pattern: /(?:SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|TRUNCATE)[\s\S]*?(?:\+\s*\w+|\$\{|\%s|`\$\{|f["']\{|\.format\()/gi,
                     title: 'SQL Injection Vulnerability',
                     severity: 'critical',
                     description: 'Direct string interpolation in SQL query allows attackers to execute arbitrary SQL commands.',
-                    suggestion: 'Use parameterized queries or prepared statements instead of string interpolation.',
-                    line: 3
+                    suggestion: 'Use parameterized queries or prepared statements instead of string interpolation.'
                 },
-                {
+                hardcodedCredentials: {
+                    pattern: /(?:password|passwd|pwd|secret|api_key|apikey|token|auth)\s*[=:]\s*['"][^'"]{3,}['"]/gi,
                     title: 'Hardcoded Credentials',
                     severity: 'critical',
-                    description: 'Password is hardcoded in the source code, which is a major security risk.',
-                    suggestion: 'Use environment variables or a secure configuration management system for credentials.',
-                    line: 5
+                    description: 'Sensitive credentials are hardcoded in source code, which is a major security risk.',
+                    suggestion: 'Use environment variables or a secure configuration management system for credentials.'
                 },
-                {
+                evalUsage: {
+                    pattern: /\beval\s*\(/g,
+                    title: 'Dangerous eval() Usage',
+                    severity: 'critical',
+                    description: 'Using eval() can execute arbitrary code and is a serious security risk.',
+                    suggestion: 'Avoid eval() entirely. Use safer alternatives like JSON.parse() for data parsing.'
+                },
+                commandInjection: {
+                    pattern: /(?:exec|system|shell_exec|popen|subprocess\.call|os\.system|Runtime\.exec)\s*\([^)]*\+/gi,
+                    title: 'Command Injection Risk',
+                    severity: 'critical',
+                    description: 'Dynamic command construction can lead to command injection attacks.',
+                    suggestion: 'Use allowlists and sanitize inputs. Avoid shell commands when possible.'
+                },
+                xssVulnerability: {
+                    pattern: /innerHTML\s*=|document\.write\s*\(|\.html\s*\([^)]*\$|dangerouslySetInnerHTML/g,
+                    title: 'XSS Vulnerability',
+                    severity: 'high',
+                    description: 'Direct HTML insertion can lead to Cross-Site Scripting attacks.',
+                    suggestion: 'Use textContent instead of innerHTML, or sanitize HTML content properly.'
+                },
+                // Code quality issues
+                noErrorHandling: {
+                    pattern: /(?:fetch|axios|request)\s*\([^)]+\)(?!\s*\.catch|\s*\.then\([^)]+\)\s*\.catch|\s*\.\s*catch)/g,
                     title: 'Missing Error Handling',
                     severity: 'high',
-                    description: 'No try-catch block for database operations. Errors will propagate unexpectedly.',
-                    suggestion: 'Add proper error handling with try-catch blocks and meaningful error messages.',
-                    line: 7
+                    description: 'Async operations without error handling can cause unhandled rejections.',
+                    suggestion: 'Add try-catch blocks or .catch() handlers for all async operations.'
                 },
-                {
-                    title: 'No Input Validation',
+                consoleLog: {
+                    pattern: /console\.(log|debug|info|warn)\s*\(/g,
+                    title: 'Console Statement in Production',
+                    severity: 'low',
+                    description: 'Console statements should be removed in production code.',
+                    suggestion: 'Remove console statements or use a proper logging library with log levels.'
+                },
+                emptyBlock: {
+                    pattern: /(?:catch|finally|if|else|for|while)\s*\([^)]*\)\s*\{\s*\}/g,
+                    title: 'Empty Code Block',
                     severity: 'medium',
-                    description: 'The userId parameter is not validated before use.',
-                    suggestion: 'Validate and sanitize all user inputs before processing.',
-                    line: 1
+                    description: 'Empty blocks may indicate incomplete implementation.',
+                    suggestion: 'Add appropriate code or comments explaining why the block is empty.'
+                },
+                // Performance issues
+                nestedLoops: {
+                    pattern: /for\s*\([^)]+\)\s*\{[^}]*for\s*\([^)]+\)/g,
+                    title: 'Nested Loops',
+                    severity: 'medium',
+                    description: 'Nested loops may cause O(n²) performance issues.',
+                    suggestion: 'Consider using hash maps or sets to reduce time complexity.'
+                },
+                asyncInLoop: {
+                    pattern: /(?:for|while)\s*\([^)]+\)\s*\{[^}]*await\s+/g,
+                    title: 'Await in Loop',
+                    severity: 'medium',
+                    description: 'Sequential await in loops can cause performance issues.',
+                    suggestion: 'Use Promise.all() for parallel execution when possible.'
+                },
+                // Best practices
+                varUsage: {
+                    pattern: /\bvar\s+\w+/g,
+                    title: 'Using var Instead of let/const',
+                    severity: 'low',
+                    description: 'var has function scope which can lead to unexpected behavior.',
+                    suggestion: 'Use const for values that don\'t change, let for variables that do.'
+                },
+                magicNumbers: {
+                    pattern: /(?:if|while|for)\s*\([^)]*[<>=!]=?\s*\d{2,}[^)]*\)/g,
+                    title: 'Magic Numbers',
+                    severity: 'low',
+                    description: 'Hardcoded numbers make code harder to understand and maintain.',
+                    suggestion: 'Define named constants with descriptive names.'
+                },
+                todoComments: {
+                    pattern: /\/\/\s*(?:TODO|FIXME|HACK|XXX)/gi,
+                    title: 'TODO/FIXME Comment',
+                    severity: 'low',
+                    description: 'Unfinished work marked with TODO comments.',
+                    suggestion: 'Address TODO items or create proper issue tickets.'
                 }
-            ],
+            },
+
+            analyze(code, language, focusAreas) {
+                const issues = [];
+                const lines = code.split('\n');
+
+                // Determine which patterns to check based on focus areas
+                let patternsToCheck = Object.entries(this.patterns);
+
+                if (focusAreas && focusAreas.length > 0) {
+                    const securityPatterns = ['sqlInjection', 'hardcodedCredentials', 'evalUsage', 'commandInjection', 'xssVulnerability'];
+                    const performancePatterns = ['nestedLoops', 'asyncInLoop'];
+                    const qualityPatterns = ['noErrorHandling', 'emptyBlock', 'varUsage', 'magicNumbers', 'todoComments', 'consoleLog'];
+
+                    patternsToCheck = patternsToCheck.filter(([name]) => {
+                        if (focusAreas.includes('security') && securityPatterns.includes(name)) return true;
+                        if (focusAreas.includes('performance') && performancePatterns.includes(name)) return true;
+                        if (focusAreas.includes('clean_code') && qualityPatterns.includes(name)) return true;
+                        if (focusAreas.includes('best_practices')) return true;
+                        return false;
+                    });
+
+                    if (patternsToCheck.length === 0) {
+                        patternsToCheck = Object.entries(this.patterns);
+                    }
+                }
+
+                // Check each pattern
+                for (const [name, pattern] of patternsToCheck) {
+                    const regex = new RegExp(pattern.pattern.source, pattern.pattern.flags);
+                    let match;
+
+                    while ((match = regex.exec(code)) !== null) {
+                        // Find line number
+                        const beforeMatch = code.substring(0, match.index);
+                        const lineNumber = beforeMatch.split('\n').length;
+
+                        issues.push({
+                            title: pattern.title,
+                            severity: pattern.severity,
+                            description: pattern.description,
+                            suggestion: pattern.suggestion,
+                            line: lineNumber,
+                            code: match[0].substring(0, 50) + (match[0].length > 50 ? '...' : '')
+                        });
+                    }
+                }
+
+                // Calculate score
+                const severityWeights = { critical: 20, high: 10, medium: 5, low: 2 };
+                let deductions = issues.reduce((sum, issue) => sum + (severityWeights[issue.severity] || 0), 0);
+                const score = Math.max(0, 100 - deductions);
+
+                // Generate summary
+                const criticalCount = issues.filter(i => i.severity === 'critical').length;
+                const highCount = issues.filter(i => i.severity === 'high').length;
+
+                let summary = '';
+                if (criticalCount > 0) {
+                    summary = `Critical security vulnerabilities detected. Found ${criticalCount} critical and ${highCount} high severity issues.`;
+                } else if (highCount > 0) {
+                    summary = `Significant issues found. ${highCount} high severity issues require attention.`;
+                } else if (issues.length > 0) {
+                    summary = `Code quality can be improved. ${issues.length} issues found.`;
+                } else {
+                    summary = 'Great job! No significant issues detected in the code.';
+                }
+
+                // Generate recommendations
+                const recommendations = [...new Set(issues.map(i => i.suggestion))].slice(0, 5);
+
+                return {
+                    score,
+                    summary,
+                    issues,
+                    recommendations
+                };
+            }
+        };
+
+        // Fallback simulation response for when no issues found
+        const fallbackResponse = {
+            score: 92,
+            summary: 'Code looks good! Minor suggestions for improvement.',
+            issues: [],
             recommendations: [
-                'Implement parameterized queries for all database operations',
-                'Move sensitive credentials to environment variables',
-                'Add comprehensive error handling',
-                'Implement input validation and sanitization'
+                'Consider adding more inline documentation',
+                'Review error handling strategies',
+                'Ensure consistent code formatting'
             ]
         };
 
@@ -1356,8 +1504,12 @@
                     });
                     result = await response.json();
                 } else {
-                    await new Promise(resolve => setTimeout(resolve, 2000));
-                    result = simulationResponse;
+                    // Use real code analysis for demo mode
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    result = CodeAnalyzer.analyze(code, language, selectedFocusAreas);
+                    if (result.issues.length === 0) {
+                        result = fallbackResponse;
+                    }
                 }
 
                 currentResult = result;
